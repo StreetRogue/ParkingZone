@@ -1,0 +1,22 @@
+/* Estilo inicial para que el navbar sea transparente */
+.sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: transparent;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+/* Al hacer scroll, el navbar cambiará a negro */
+.scrolled {
+    background-color: black;
+    color: white;
+}
+
+/* Hacer que el menú desplegable sea sticky para pantallas pequeñas */
+#mobile-menu {
+    position: sticky;
+    top: 110px;
+    z-index: 1000;
+}

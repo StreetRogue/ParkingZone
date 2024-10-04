@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap">
+    <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'>
+    <link rel="stylesheet" href="../assetsLogin/style.css">
+    <script src="../assetsLogin/script.js" defer></script>
+    <title>Iniciar Sesión</title>
+</head>
+<body>
+    <div class="container-form login">
+        <div class="information">
+            <div class="info-childs">
+                <img src="../Resources/exitoLogoBanner.jpg" alt="Logo Éxito" class="imgBanner">
+                <div class="texto">
+                    <p class="p1">El placer</p>
+                    <p class="p2">de elegir</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-information">
+            <div class="form-information-childs">
+                <h2>Iniciar Sesión</h2>
+                <form class="form form-login" novalidate>
+                    <div>
+                        <label>
+                            <i class='bx bx-user' ></i>
+                            <input type="text" placeholder="Nombre Completo" id="name">
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <i class='bx bx-id-card'></i>
+                            <input type="password" placeholder="Cédula de Ciudadanía" id="password">
+                        </label>
+                    </div>
+                    <input type="submit" value="Iniciar Sesión">
+                    <div id="alerta-error"> </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
