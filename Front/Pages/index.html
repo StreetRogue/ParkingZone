@@ -12,27 +12,26 @@
 
 <body class="bg-white">
 
-
     <!-- Navbar -->
     <header id="navbar" class="sticky-nav flex justify-between items-center p-2 bg-black">
-        <div class="flex items-center space-x-2">
+        <div id="logo-container" class="flex items-center space-x-2">
 
             <!-- Logo para pantallas grandes (visibilidad solo en pantallas medianas y superiores) -->
-            <div class="p-4 hidden md:block">
+            <div id="logo-large" class="p-4 hidden md:block">
                 <img src="../Resources/Logo_Exito_colombia.png" alt="Logo Éxito" class="w-20 h-25">
             </div>
 
             <!-- Logo para pantallas pequeñas (visible solo en pantallas pequeñas) -->
-            <div class="p-4 block md:hidden ">
+            <div id="logo-small" class="p-4 block md:hidden">
                 <img src="../Resources/Logo_Exito_colombia.png" alt="Logo Éxito Banner" class="w-20 h-25">
-                <div class="absolute left-1/2 transform -translate-x-1/2 text-center md:hidden -translate-y-14">
-                    <span class="text-white-900 font-bold text-2xl">Parking</s>
+                <div id="small-banner" class="absolute left-1/2 transform -translate-x-1/2 text-center md:hidden -translate-y-14">
+                    <span class="text-white-900 font-bold text-2xl">Parking</span>
                     <span class="text-yellow-500 font-bold text-2xl">Zone</span>
                 </div>
             </div>
 
             <!-- Menú para pantallas grandes -->
-            <nav class="hidden md:flex space-x-4 text-white-700">
+            <nav id="nav-large" class="hidden md:flex space-x-4 text-white-700">
                 <a href="#home" class="hover:text-yellow-500 mr-2">Home</a>
                 <a href="#registrar-entrada" class="hover:text-yellow-500 mr-2">Registrar Entrada</a>
                 <a href="#registrar-salida" class="hover:text-yellow-500 mr-2">Registrar Salida</a>
@@ -40,28 +39,27 @@
         </div>
 
         <!-- Título centrado solo visible en pantallas grandes -->
-        <div class="absolute left-1/2 transform -translate-x-1/2 text-center hidden md:block">
+        <div id="center-title" class="absolute left-1/2 transform -translate-x-1/2 text-center hidden md:block">
             <span class="text-white-900 font-bold text-2xl">Parking</span>
             <span class="text-yellow-500 font-bold text-2xl">Zone</span>
         </div>
 
         <!-- Enlaces de la derecha (solo visibles en pantallas grandes) -->
-        <nav class="hidden md:flex space-x-2 text-yellow-500 header-links p-10">
+        <nav id="nav-right" class="hidden md:flex space-x-2 text-yellow-500 header-links p-10">
             <a href="#" class="hover:text-white mr-2">Estadísticas</a>
             <a href="#" class="hover:text-white mr-2 ">Monitoreo</a>
             <a href="#" class="hover:text-white mr-2">Reportes e Incidentes</a>
         </nav>
 
         <!-- Ícono de menú desplegable para pantallas pequeñas -->
-        <div class="md:hidden pr-4">
+        <div id="menu-icon-container" class="md:hidden pr-4">
             <img id="menu-icon" src="../Resources/navBarIcon.png" alt="Menu" class="w-8 h-8 cursor-pointer">
         </div>
     </header>
 
-
     <!-- Menú desplegable para pantallas pequeñas (escondido por defecto) -->
     <nav id="mobile-menu" class="hidden bg-white p-4">
-        <ul class="space-y-4 text-gray-700">
+        <ul id="mobile-menu-list" class="space-y-4 text-gray-700">
             <li><a href="#home" class="hover:bg-gray-200 p-2 block">Home</a></li>
             <li><a href="#registrar-entrada" class="hover:bg-gray-200 p-2 block">Registrar Entrada</a></li>
             <li><a href="#registrar-salida" class="hover:bg-gray-200 p-2 block">Registrar Salida</a></li>
@@ -74,7 +72,7 @@
     <!-- Sección 1: Pantalla completa -->
     <main id="home" class="flex flex-col md:flex-row justify-between items-center h-screen bg-white px-6 md:px-16">
         <!-- Sección de texto con botones -->
-        <div class="max-w-lg text-center md:text-left md:max-w-lg">
+        <div id="text-section" class="max-w-lg text-center md:text-left md:max-w-lg">
             <h1 class="text-3xl md:text-6xl font-bold text-gray-900">
                 ¡Tu parqueadero de confianza!
             </h1>
@@ -87,46 +85,42 @@
         </div>
 
         <!-- Imagen ilustrativa -->
-        <div class="relative w-full md:w-1/2 flex justify-center md:justify-end mt-8 md:mt-0">
+        <div id="illustration" class="relative w-full md:w-1/2 flex justify-center md:justify-end mt-8 md:mt-0">
             <img src="../Resources/Illustration.svg" alt="Ilustración" class="w-3/4 h-auto">
         </div>
     </main>
 
     <!-- Sección 2: Registrar Entrada -->
-    <section id="registrar-entrada"
-        class="h-screen flex flex-col md:flex-row items-center justify-between bg-white-100 mt-24 md:mt-32 px-6 md:px-16">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+    <section id="registrar-entrada" class="h-screen flex flex-col md:flex-row items-center justify-between bg-white-100 mt-24 md:mt-32 px-6 md:px-16">
+        <div id="entrada-container" class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
             <!-- Formulario de registro -->
-            <div class="flex flex-col space-y-4 w-full md:w-1/2 md:mr-8">
+            <div id="entrada-form" class="flex flex-col space-y-4 w-full md:w-1/2 md:mr-8">
                 <h2 class="text-2xl font-semibold text-gray-900">Registrar Entrada</h2>
                 <input type="text" placeholder="Ingresar Cédula del visitante" class="border-b border-gray-400 focus:outline-none focus:border-yellow-500 text-gray-900 p-2">
                 <input type="text" placeholder="Ingresar Nombre Visitante" class="border-b border-gray-400 focus:outline-none focus:border-yellow-500 text-gray-900 p-2">
                 <input type="text" placeholder="Ingresar Placa Vehículo" class="border-b border-gray-400 focus:outline-none focus:border-yellow-500 text-gray-900 p-2">
-                <button
-                    class="bg-black text-yellow-300 px-6 py-3 rounded hover:bg-[#ec2023] w-1/3 mt-4 transition-colors duration-300">Registrar</button>
+                <button class="bg-black text-yellow-300 px-6 py-3 rounded hover:bg-[#ec2023] w-1/3 mt-4 transition-colors duration-300">Registrar</button>
             </div>
             <!-- Imagen ilustrativa -->
-            <div class="relative w-full md:w-1/2 flex justify-center md:justify-end mt-8 md:mt-0">
-                <img src="../Resources/addCarIllustration.svg" alt="Ilustración Carro" class="w-3/4 h-auto ">
+            <div id="entrada-illustration" class="relative w-full md:w-1/2 flex justify-center md:justify-end mt-8 md:mt-0">
+                <img src="../Resources/addCarIllustration.svg" alt="Ilustración Carro" class="w-3/4 h-auto">
             </div>
         </div>
     </section>
 
     <!-- Sección 3: Registrar Salida -->
-    <section id="registrar-salida"
-        class="h-screen flex flex-col md:flex-row items-center justify-between bg-white-100 mt-24 md:mt-32 px-6 md:px-16">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+    <section id="registrar-salida" class="h-screen flex flex-col md:flex-row items-center justify-between bg-white-100 mt-24 md:mt-32 px-6 md:px-16">
+        <div id="salida-container" class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
             <!-- Formulario de registro de salida -->
-            <div class="flex flex-col space-y-4 w-full md:w-1/2 md:mr-8">
+            <div id="salida-form" class="flex flex-col space-y-4 w-full md:w-1/2 md:mr-8">
                 <h2 class="text-2xl font-semibold text-gray-900">Registrar Salida</h2>
                 <input type="text" placeholder="Ingresar Cédula del visitante" class="border-b border-gray-400 focus:outline-none focus:border-yellow-500 text-gray-900 p-2">
                 <input type="text" placeholder="Ingresar Placa Vehículo" class="border-b border-gray-400 focus:outline-none focus:border-yellow-500 text-gray-900 p-2">
-                <button
-                    class="bg-black text-yellow-300 px-6 py-3 rounded hover:bg-[#ec2023] w-1/3 mt-4 transition-colors duration-300">Registrar</button>
+                <button class="bg-black text-yellow-300 px-6 py-3 rounded hover:bg-[#ec2023] w-1/3 mt-4 transition-colors duration-300">Registrar</button>
             </div>
             <!-- Imagen ilustrativa -->
-            <div class="relative w-full md:w-1/2 flex justify-center md:justify-end mt-8 md:mt-0">
-                <img src="../Resources/exitCarIllustration.svg" alt="Ilustración Carro" class="w-[918px] h-[432px] ">
+            <div id="salida-illustration" class="relative w-full md:w-1/2 flex justify-center md:justify-end mt-8 md:mt-0">
+                <img src="../Resources/exitCarIllustration.svg" alt="Ilustración Carro" class="w-[918px] h-[432px]">
             </div>
         </div>
     </section>
