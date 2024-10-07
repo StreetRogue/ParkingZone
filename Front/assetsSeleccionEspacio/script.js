@@ -1,11 +1,6 @@
 const buttonsA = document.querySelectorAll('.spaceA');
 const buttonsB = document.querySelectorAll('.spaceB');
-
-buttonsA.forEach(function(buttonA, index) {
-    buttonA.onclick = function() {
-        alert("hola " + (index + 1) + "!");
-    };
-});
+const btnCancelar = document.getElementById("btn-cancelar");
 
 buttonsA.forEach(function(buttonA, index) {
     buttonA.onclick = function() {
@@ -27,4 +22,10 @@ buttonsB.forEach(function(buttonB, index) {
             parrafo.style.backgroundColor = "transparent";  // Regresa al original
         }
     };
+});
+
+// Cancelar entrada al parqueadero
+
+btnCancelar.addEventListener("click", function () {
+    window.location.href = "../pages/Index.html#home";
 });
