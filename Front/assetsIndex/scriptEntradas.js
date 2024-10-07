@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Comprobación de los campos
         if (cedula && nombre && placa) {
             // LLamado al BackEnd para validar el registro del visitante y vehículo
-            const res = await fetch("http://localhost:3000/validarRegistro", {
+            const res = await fetch("http://localhost:3000/validarEntrada", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

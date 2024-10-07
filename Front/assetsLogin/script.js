@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Comprobacion de los campos
         if (user && password) {
             // LLamado al BackEnd
-            const res = await fetch("http://localhost:3000/iniciarSesion", {
+            const res = await fetch("http://localhost:3000/validarInicioSesion", {
                 method:"POST",
                 headers: {
                     "Content-Type": "application/json"
