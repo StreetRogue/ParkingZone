@@ -19,7 +19,6 @@ app.use(cors({
     ]
 }));
 
-
 app.use(express.json());
 
 // Rutas
@@ -29,8 +28,8 @@ app.post("/iniciarSesion", async (req, res) => {
         // Conexion a Base de Datos
         const conexion = await dataBase.getConnection();
         let consulta = `SELECT *
-            FROM ADMINISTRADORES
-            WHERE NOMBRE = '` + req.body.user + `' AND CEDULA = ` + req.body.password;
+            FROM ADMINISTRADOR
+            WHERE NOMBREUSUARIO = '` + req.body.user + `' AND CONTRASENIA = ` + req.body.password;
         // Realizo la consulta
         const data = await conexion.execute(consulta);
 
@@ -49,6 +48,35 @@ app.post("/iniciarSesion", async (req, res) => {
     } else {
         return res.status(400).send({status:"Error"});
     }
+});
 
-    //console.log(consulta);
+// Registro Entradas
+app.post("/validarRegistro", async (req, res) => {
+    const { cedula, nombre, placa } = req.body;
+    if (cedula && nombre && placa) {
+        // Conexion a Base de Datos
+        const conexion = await dataBase.getConnection();
+        
+        // Consulta con INNER JOIN entre Visitante y Vehículo
+        let consulta = `
+            SELECT V.cedula, V.nombre, Veh.placa
+            FROM Visitante V
+            INNER JOIN Vehiculo Veh ON V.cedula = Veh.cedula
+            WHERE V.cedula = '${cedula}' AND Veh.placa = '${placa}'`;
+        
+        const data = await conexion.execute(consulta);
+        
+        // Si el vehículo y el visitante ya están asociados, se retorna error
+        if (data.rows.length > 0) {
+            console.log("El visitante y el vehículo ya están registrados");
+            conexion.close();
+            return res.status(400).send({ status: "Error", message: "Visitante y vehículo ya están asociados" });
+        } else {
+            console.log("Validación exitosa, redirigiendo a selección de zona de parqueo");
+            conexion.close();
+            return res.send({ status: "ok", message: "Validación exitosa", redirect: "/Pages/seleccionEspacio.html" });
+        }
+    } else {
+        return res.status(400).send({ status: "Error", message: "Todos los campos son obligatorios" });
+    }
 });
