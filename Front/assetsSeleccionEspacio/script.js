@@ -27,5 +27,5 @@ buttonsB.forEach(function(buttonB, index) {
 // Cancelar entrada al parqueadero
 
 btnCancelar.addEventListener("click", function () {
-    window.location.href = "../pages/Index.html#home";
+    window.location.href = "../pages/Index.html#registrar-entrada";
 });
