@@ -1,5 +1,3 @@
-// script.js
-
 document.addEventListener('DOMContentLoaded', function() {
     // Seleccionamos el botón de registrar
     const registrarBtn = document.getElementById('boton-registrar');
