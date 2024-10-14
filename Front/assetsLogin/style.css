@@ -141,13 +141,20 @@ body {
 /*PERSONALIZACION DE MIS ALERTAS Y MENSAJES */
 #alerta-error {
   height: 31px;
-  width: 223.58px;
+  width: 266px;
+  /*width: 223.58px;*/
   display: block;
   color: #F66060;
   padding: .5rem 1rem;
   margin-top: 10px;
   font-weight: 500;
   font-size: .8rem;
+}
+
+.icono-alerta {
+  width: 20px; /* Ajusta el tamaño del icono */
+  height: 20px;
+  margin-right: 10px; /* Espacio entre el icono y el texto */
 }
 
 /*RESPONSIVE FORM*/

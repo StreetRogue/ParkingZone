@@ -22,13 +22,17 @@ app.use(cors({
 app.use(express.json());
 
 // Rutas
-app.post("/iniciarSesion", async (req, res) => {
+
+// Validar Inicio de Sesion
+app.post("/validarInicioSesion", async (req, res) => {
     // Validar que los campos no esten vacios
     if (req.body.user && req.body.password) {
         // Conexion a Base de Datos
         const conexion = await dataBase.getConnection();
         let consulta = `SELECT *
+
             FROM USUARIO
+
             WHERE NOMBREUSUARIO = '` + req.body.user + `' AND CONTRASENIA = '` + req.body.password + `'`;
         // Realizo la consulta
         const data = await conexion.execute(consulta);
@@ -43,7 +47,9 @@ app.post("/iniciarSesion", async (req, res) => {
             console.log("Inicio de sesion correcto");
             // Cerrar conexion
             conexion.close();
-            return res.send({ status: "ok", message: "Inicio de sesion correcto", redirect: "/Pages/Index.html" });
+
+            return res.send({ status: "ok", message: "Inicio de sesion correcto", redirect: "/Pages/Index.html#home" });
+
         }
     } else {
         return res.status(400).send({ status: "Error" });
@@ -51,7 +57,7 @@ app.post("/iniciarSesion", async (req, res) => {
 });
 
 // Registro Entradas
-app.post("/validarRegistro", async (req, res) => {
+app.post("/validarEntrada", async (req, res) => {
     const { cedula, nombre, placa } = req.body;
     if (cedula && nombre && placa) {
         // Conexion a Base de Datos
@@ -90,6 +96,7 @@ app.post("/validarRegistro", async (req, res) => {
         if (dataVisitante.rows.length > 0) {
             console.log("El visitante ya está registrado");
             conexion.close();
+
             return res.status(400).send({ status: "Error", message: "Visitante ya se encuentra en el parqueadero" });
         }
 
@@ -167,6 +174,7 @@ app.post("/validarSalida", async (req, res) => {
             if (conexion) {
                 await conexion.close(); // Asegurarse de cerrar la conexión
             }
+
         }
     } else {
         return res.status(400).send({ status: "Error", message: "Todos los campos son obligatorios" });
