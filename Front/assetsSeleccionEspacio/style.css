@@ -186,5 +186,38 @@ button {
     border: none;
 }
 
+.alerta {
+    height: 50%;
+    width: 70%;
+    background-color: red;
+    border-radius: 30px;
+    position: absolute;
+    top: 25%;
+    left: 15%;
+}
+
+.cabecera {
+    height: 30%;
+    width: 100%;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    background-color: #000;
+}
+
+.alerta .botones {
+    width: 60%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.alerta button {
+    position: relative;
+    display: inline-block;
+}
 
 

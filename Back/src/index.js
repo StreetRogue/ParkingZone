@@ -29,10 +29,9 @@ app.post("/validarInicioSesion", async (req, res) => {
     if (req.body.user && req.body.password) {
         // Conexion a Base de Datos
         const conexion = await dataBase.getConnection();
-        let consulta = `SELECT *
-
+        let consulta = `
+            SELECT *
             FROM USUARIO
-
             WHERE NOMBREUSUARIO = '` + req.body.user + `' AND CONTRASENIA = '` + req.body.password + `'`;
         // Realizo la consulta
         const data = await conexion.execute(consulta);
@@ -65,10 +64,10 @@ app.post("/validarEntrada", async (req, res) => {
 
         // Comsulta de verificacion de placa con zona de parqueo ocupada
         let consultaVehiculoZona = `
-            SELECT zp.NumeroEspacio, zp.Zona, zp.Estado
-            FROM Vehiculo v
-            JOIN EntradaSalida es ON v.placa = es.placa
-            JOIN ZonaParqueo zp ON es.ID_ZonaParqueo = zp.ID_ZonaParqueo
+            SELECT *
+            FROM Vehiculo v INNER JOIN EntradaSalida es 
+            ON v.placa = es.placa INNER JOIN ZonaParqueo zp 
+            ON es.ID_ZonaParqueo = zp.ID_ZonaParqueo
             WHERE v.placa = '${placa}'
             AND zp.Estado = 'Ocupado'`;
 
@@ -83,11 +82,12 @@ app.post("/validarEntrada", async (req, res) => {
 
         // Consulta de verificacion de cedula con zona de parqueo ocupada
         let consultaVisitanteZona = `
-            SELECT zp.NumeroEspacio, zp.Zona, zp.Estado
-            FROM Vehiculo v
-            JOIN Visitante vi ON v.cedula = vi.cedula
-            JOIN EntradaSalida es ON v.placa = es.placa
-            JOIN ZonaParqueo zp ON es.ID_ZonaParqueo = zp.ID_ZonaParqueo
+            SELECT *
+            FROM Vehiculo v INNER JOIN Visitante vi 
+            ON v.cedula = vi.cedula
+            INNER JOIN EntradaSalida es 
+            ON v.placa = es.placa INNER JOIN ZonaParqueo zp ON 
+            es.ID_ZonaParqueo = zp.ID_ZonaParqueo
             WHERE vi.cedula = '${cedula}'
             AND zp.Estado = 'Ocupado'`;
         const dataVisitante = await conexion.execute(consultaVisitanteZona);

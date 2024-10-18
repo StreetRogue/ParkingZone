@@ -20,3 +20,9 @@
     top: 110px;
     z-index: 1000;
 }
+
+#entrada-form p {
+    margin: 0;
+    display: none;
+    color: #F66060;
+}
