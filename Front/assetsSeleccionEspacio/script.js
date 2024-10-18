@@ -23,6 +23,9 @@ const zonasParqueo = [ZonaA1,ZonaA2,ZonaA3,ZonaA4,ZonaA5,ZonaA6,ZonaA7,ZonaB1,Zo
 
 const nuevoParqueadero = new Parqueadero(zonasParqueo);
 
+const alertaActiva = document.getElementById('alerta-confirmacion');
+const fondo = document.getElementById('overlay');
+
 buttonsA.forEach(function(buttonA, index) {
     const parrafo = buttonA.querySelector("p");
     let zona = nuevoParqueadero.zonasParqueadero[index];
@@ -32,7 +35,8 @@ buttonsA.forEach(function(buttonA, index) {
         parrafo.style.backgroundColor = "transparent";  // Regresa al original
     }
     buttonA.onclick = function() {
-        
+        alertaActiva.classList.add('alerta-activa');
+        fondo.classList.add('overlay-activo');
     };
 });
 
@@ -46,8 +50,19 @@ buttonsB.forEach(function(buttonB, index) {
         parrafo.style.backgroundColor = "transparent";  // Regresa al original
     }
     buttonB.onclick = function() {
+        alertaActiva.classList.add('alerta-activa');
+        fondo.classList.add('overlay-activo');
     };
 });
+
+// Cancelar confirmacion del espacio
+const btnConfirmarSeleccion = document.getElementById('confirmar-seleccion');
+const btnCancelarSeleccion = document.getElementById('cancelar-seleccion');
+
+btnCancelarSeleccion.addEventListener("click", function () {
+    alertaActiva.classList.remove('alerta-activa');
+    fondo.classList.remove('overlay-activo');
+})
 
 // Cancelar entrada al parqueadero
 

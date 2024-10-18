@@ -11,6 +11,11 @@ html, body {
     max-width: 100vw;
 }
 
+.contenedor {
+    height: 100vh;
+    max-width: 100vw;
+}
+
 .header {
     height: 122px;
     position: relative;
@@ -113,7 +118,15 @@ button {
     font-weight: bold;
     border-radius: 1.25rem; /* Bordes redondeados */
     cursor: pointer; /* Cambiar el cursor al pasar el mouse */
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
 }
+
+button:hover {
+    background-color: #ec2023;
+}
+
 .container-spaces {
     height: 100%;
     width: 65%;
@@ -189,11 +202,15 @@ button {
 .alerta {
     height: 50%;
     width: 70%;
-    background-color: red;
+    background-color: #FFFFFF;
     border-radius: 30px;
     position: absolute;
     top: 25%;
     left: 15%;
+    z-index: 2;
+    opacity: 0; /* Inicialmente invisible */
+    visibility: hidden; /* Oculta el elemento visualmente */
+    transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
 .cabecera {
@@ -202,6 +219,24 @@ button {
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
     background-color: #000;
+    position: relative;
+}
+
+.cabecera .logo img {
+    width: 80px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 24px;
+}
+
+.cabecera h2 {
+    color: #FFFFFF;
+    font-size: 1.8rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .alerta .botones {
@@ -220,4 +255,20 @@ button {
     display: inline-block;
 }
 
+#overlay {
+    position: fixed; /* Asegura que cubra toda la pantalla */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo negro con opacidad */
+    z-index: 1; /* Asegúrate de que esté por encima del contenido pero debajo de la alerta */
+    opacity: 0; /* Inicialmente invisible */
+    visibility: hidden; /* Oculto */
+    transition: opacity 0.5s ease, visibility 0.5s ease; /* Transición suave */
+}
 
+.alerta-activa, .overlay-activo {
+    opacity: 1 !important; /* Hacer visible */
+    visibility: visible !important; /* Asegurarse de que se vea */
+}

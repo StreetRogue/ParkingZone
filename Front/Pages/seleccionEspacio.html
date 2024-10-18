@@ -8,12 +8,11 @@
     <title>Seleccion De Espacio</title>
 </head>
 <body>
-    
     <!-- Navbar -->
     <header class="header">
         <!-- Logo para pantallas grandes (visibilidad solo en pantallas medianas y superiores) -->
         <div class="logo">
-            <img src="../Resources/Logo_Exito_colombia.png" alt="Logo Éxito" class="w-20 h-25">
+            <img src="../Resources/Logo_Exito_colombia.png" alt="Logo Éxito">
         </div>
 
         <!-- Título centrado solo visible en pantallas grandes -->
@@ -86,11 +85,17 @@
             </div>
         </div>
     </div>
-    <div class="alerta">
-        <div class="cabecera"></div>
+    <div id="overlay"></div>
+    <div id="alerta-confirmacion" class="alerta">
+        <div class="cabecera">
+            <div class="logo">
+                <img src="../Resources/Logo_Exito_colombia.png" alt="Logo Éxito">
+                <h2>¿Desea continuar con la operación?</h2>
+            </div>
+        </div>
         <div class="botones">
-            <button class="confirmar">CONFIRMAR</button>
-            <button class="cancelar">CANCELAR</button>
+            <button id="confirmar-seleccion" class="confirmar">CONFIRMAR</button>
+            <button id="cancelar-seleccion" class="cancelar">CANCELAR</button>
         </div>
     </div>
 </body>
