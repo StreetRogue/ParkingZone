@@ -1,58 +1,64 @@
-import { ZonaParqueo } from '../Classes/ZonaParqueo.js';
+// Importamos clases
+import {ZonaParqueo} from '../Classes/ZonaParqueo.js';
 import {Parqueadero} from '../Classes/Parqueadero.js';
+import {Visitante} from '../Classes/Visitante.js';
+import {Vehiculo} from '../Classes/Vehiculo.js';
+
+const datosVisitante = JSON.parse(localStorage.getItem('nuevoVisitante'));
+const datosVehiculo = JSON.parse(localStorage.getItem('nuevoVehiculo'));
+
+const nuevoVisitante = new Visitante(datosVisitante.cedula, datosVisitante.nombre);
+const nuevoVehiculo = new Vehiculo(datosVehiculo.placa, datosVehiculo.cedula);
+
+console.log(nuevoVisitante.nombre);
+console.log(nuevoVehiculo.placa);
+
 const buttonsA = document.querySelectorAll('.spaceA');
 const buttonsB = document.querySelectorAll('.spaceB');
 const btnCancelar = document.getElementById("btn-cancelar");
 
-const ZonaA1 = new ZonaParqueo('A1', true);
-const ZonaA2= new ZonaParqueo('A2', false);
-const ZonaA3= new ZonaParqueo('A3', true);
-const ZonaA4 = new ZonaParqueo('A4', true);
-const ZonaA5 = new ZonaParqueo('A5', true);
-const ZonaA6 = new ZonaParqueo('A6', false);
-const ZonaA7 = new ZonaParqueo('A7', true);
-const ZonaB1 = new ZonaParqueo('B1', false);
-const ZonaB2= new ZonaParqueo('B2', false);
-const ZonaB3= new ZonaParqueo('B3', false);
-const ZonaB4 = new ZonaParqueo('B4', false);
-const ZonaB5 = new ZonaParqueo('B5', true);
-const ZonaB6 = new ZonaParqueo('B6', true);
-const ZonaB7 = new ZonaParqueo('B7', true);
+// Se obtienen las zonas de la base de datos
+const zonas = await fetch("http://localhost:3000/obtenerZonas");
+const zonasJson = await zonas.json();
 
-const zonasParqueo = [ZonaA1,ZonaA2,ZonaA3,ZonaA4,ZonaA5,ZonaA6,ZonaA7,ZonaB1,ZonaB2,ZonaB3,ZonaB4,ZonaB5,ZonaB6,ZonaB7]
+// Array donde se guardaran las zonas instanciadas
+const zonasParqueo = [];
 
-const nuevoParqueadero = new Parqueadero(zonasParqueo);
+// Instanciacion de las zonas
+zonasJson.forEach(function(zona, index) {
+    zonasParqueo.push(new ZonaParqueo(zonasJson[index][0], zonasJson[index][1]));
+});
 
-const alertaActiva = document.getElementById('alerta-confirmacion');
+// Se agregan las zonas al parqueadero
+const parqueaderoExito = new Parqueadero(zonasParqueo);
+
+const alertaConfir = document.getElementById('alerta-confirmacion');
 const fondo = document.getElementById('overlay');
 
 buttonsA.forEach(function(buttonA, index) {
     const parrafo = buttonA.querySelector("p");
-    let zona = nuevoParqueadero.zonasParqueadero[index];
-    if (!zona.estado) {
-        parrafo.style.backgroundColor = "#FFE701";  // Nuevo color
+    let zona = parqueaderoExito.zonasParqueadero[index];
+    if (zona.estado == 'Disponible') {
+        buttonA.onclick = function() {
+            alertaConfir.classList.add('alerta-activa');
+            fondo.classList.add('overlay-activo');
+        };
     } else {
-        parrafo.style.backgroundColor = "transparent";  // Regresa al original
+        parrafo.style.backgroundColor = "#FFE701";  // Nuevo color
     }
-    buttonA.onclick = function() {
-        alertaActiva.classList.add('alerta-activa');
-        fondo.classList.add('overlay-activo');
-    };
 });
 
 buttonsB.forEach(function(buttonB, index) {
     const parrafo = buttonB.querySelector("p");
-    let zona = nuevoParqueadero.zonasParqueadero[index + buttonsA.length];
-    console.log(zona)
-    if (!zona.estado) {
-        parrafo.style.backgroundColor = "#FFE701";  // Nuevo color
+    let zona = parqueaderoExito.zonasParqueadero[index + buttonsA.length];
+    if (zona.estado == 'Disponible') {
+        buttonB.onclick = function() {
+            alertaConfir.classList.add('alerta-activa');
+            fondo.classList.add('overlay-activo');
+        };
     } else {
-        parrafo.style.backgroundColor = "transparent";  // Regresa al original
+        parrafo.style.backgroundColor = "#FFE701";  // Nuevo color
     }
-    buttonB.onclick = function() {
-        alertaActiva.classList.add('alerta-activa');
-        fondo.classList.add('overlay-activo');
-    };
 });
 
 // Cancelar confirmacion del espacio
@@ -60,7 +66,7 @@ const btnConfirmarSeleccion = document.getElementById('confirmar-seleccion');
 const btnCancelarSeleccion = document.getElementById('cancelar-seleccion');
 
 btnCancelarSeleccion.addEventListener("click", function () {
-    alertaActiva.classList.remove('alerta-activa');
+    alertaConfir.classList.remove('alerta-activa');
     fondo.classList.remove('overlay-activo');
 })
 

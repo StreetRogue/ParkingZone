@@ -22,6 +22,9 @@ app.use(cors({
 app.use(express.json());
 
 // Rutas
+app.get("/", (req, res) => {
+    res.sendFile("/Pages/login.html");
+})
 
 // Validar Inicio de Sesion
 app.post("/validarInicioSesion", async (req, res) => {
@@ -108,6 +111,18 @@ app.post("/validarEntrada", async (req, res) => {
     } else {
         return res.status(400).send({ status: "Error", message: "Todos los campos son obligatorios" });
     }
+});
+
+app.get("/obtenerZonas", async (req, res) => {
+    const conexion = await dataBase.getConnection();
+    let consulta = `SELECT * FROM ZonaParqueo`;
+    const data = await conexion.execute(consulta);
+    res.json(data.rows);
+});
+
+get.post("/registrarEntrada", async (req, res) => {
+    let agregarEntrada = `INSERT INTO EntradaSalida (ID_EntradaSalida, FechaEntrada, placa, ID_ZonaParqueo)
+VALUES (10, CURRENT_TIMESTAMP, '${placa}', '${zona}')`
 });
 
 // Registro Salidas
