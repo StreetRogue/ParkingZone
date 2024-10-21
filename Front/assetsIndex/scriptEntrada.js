@@ -1,5 +1,11 @@
+// Importamos las clases 
+import {Visitante} from '../Classes/Visitante.js';
+import {Vehiculo} from '../Classes/Vehiculo.js';
+
 // Seleccionamos el botón de registrar
 const registrarBtn = document.getElementById('boton-registrar');
+let nuevoVisitante;
+let nuevoVehiculo;
 
 // Evento cuando se hace clic en el botón de registrar
 registrarBtn.addEventListener('click', async function(e) {
@@ -9,7 +15,7 @@ registrarBtn.addEventListener('click', async function(e) {
     const cedula = document.getElementById('entrada-cedula').value;
     const nombre = document.getElementById('entrada-nombre').value;
     const placa = document.getElementById('entrada-placa').value;
-    const msjError = document.getElementById('alerta-error');
+    const msjError = document.getElementById('error-campos');
 
     //Validacion de campos
     let validacion = validarForm(cedula, nombre, placa);
@@ -31,8 +37,12 @@ registrarBtn.addEventListener('click', async function(e) {
         const resJson = await res.json();
         if (!res.ok) {
             msjError.innerHTML = resJson.message;
+            msjError.style.display = 'block';
+            console.log(resJson.message);
         } else if (resJson.redirect) {
             // Redirigir a la página de seleccionEspacio
+            localStorage.setItem('nuevoVisitante', JSON.stringify({ cedula: cedula, nombre: nombre }));
+            localStorage.setItem('nuevoVehiculo', JSON.stringify({ placa: placa, cedula: cedula }));
             window.location.href = resJson.redirect;
         }
     }
@@ -51,6 +61,7 @@ function validarForm (cedula, nombre, placa) {
     const msjErrorP = document.getElementById('error-placa');
     let validacion = true;
     if (!(cedula && nombre && placa)) {
+        msjErrorCamp.innerHTML = 'Todos los campos son obligatorios';
         msjErrorCamp.style.display = 'block';
         validacion = false;
     } else {
@@ -81,4 +92,4 @@ function validarForm (cedula, nombre, placa) {
     return validacion;
 }
 
-
+export {nuevoVisitante, nuevoVehiculo};
