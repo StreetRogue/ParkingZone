@@ -31,6 +31,9 @@ zonasJson.forEach(function(zona, index) {
 
 // Se agregan las zonas al parqueadero
 const parqueaderoExito = new Parqueadero(zonasParqueo);
+let zonaSeleccionada;
+
+console.log(parqueaderoExito.zonasParqueadero[0].estado);
 
 const alertaConfir = document.getElementById('alerta-confirmacion');
 const fondo = document.getElementById('overlay');
@@ -40,6 +43,7 @@ buttonsA.forEach(function(buttonA, index) {
     let zona = parqueaderoExito.zonasParqueadero[index];
     if (zona.estado == 'Disponible') {
         buttonA.onclick = function() {
+            zonaSeleccionada = zona;
             alertaConfir.classList.add('alerta-activa');
             fondo.classList.add('overlay-activo');
         };
@@ -51,8 +55,10 @@ buttonsA.forEach(function(buttonA, index) {
 buttonsB.forEach(function(buttonB, index) {
     const parrafo = buttonB.querySelector("p");
     let zona = parqueaderoExito.zonasParqueadero[index + buttonsA.length];
+    console.log(zona);
     if (zona.estado == 'Disponible') {
         buttonB.onclick = function() {
+            zonaSeleccionada = zona;
             alertaConfir.classList.add('alerta-activa');
             fondo.classList.add('overlay-activo');
         };
@@ -65,10 +71,53 @@ buttonsB.forEach(function(buttonB, index) {
 const btnConfirmarSeleccion = document.getElementById('confirmar-seleccion');
 const btnCancelarSeleccion = document.getElementById('cancelar-seleccion');
 
+btnConfirmarSeleccion.addEventListener("click", async function () {
+    const resVisitante = await fetch("http://localhost:3000/registrarVisitante", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            cedula: nuevoVisitante.cedula,
+            nombre: nuevoVisitante.nombre
+        })
+    });
+    const resVisitanteJson = await resVisitante.json();
+
+    const resVehiculo = await fetch("http://localhost:3000/registrarVehiculo", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            cedula: nuevoVisitante.cedula,
+            placa: nuevoVehiculo.placa,
+        })
+    });
+    const resVehiculoJson = await resVehiculo.json();
+
+    const resEntrada = await fetch("http://localhost:3000/registrarEntrada", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            placa: nuevoVehiculo.placa,
+            zona: zonaSeleccionada.noZona,
+            estadoZona: zonaSeleccionada.estado
+        })
+    });
+    const resEntradaJson = await resEntrada.json();
+    console.log(resEntrada.ok);
+    if (resEntrada.ok) {
+        window.location.href = resEntradaJson.redirect;
+    }
+});
+
 btnCancelarSeleccion.addEventListener("click", function () {
     alertaConfir.classList.remove('alerta-activa');
     fondo.classList.remove('overlay-activo');
-})
+});
 
 // Cancelar entrada al parqueadero
 
