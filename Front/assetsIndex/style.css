@@ -21,8 +21,8 @@
     z-index: 1000;
 }
 
-#entrada-form p {
+#entrada-form p, #salida-form p {
     margin: 0;
     display: none;
     color: #F66060;
-}
+}   
