@@ -59,37 +59,36 @@ function validarForm (cedula, nombre, placa) {
     const msjErrorC = document.getElementById('error-cedula');
     const msjErrorN = document.getElementById('error-nombre');
     const msjErrorP = document.getElementById('error-placa');
+    let alertaActiva = false;
     let validacion = true;
     if (!(cedula && nombre && placa)) {
         msjErrorCamp.innerHTML = 'Todos los campos son obligatorios';
         msjErrorCamp.style.display = 'block';
-        validacion = false;
+        return false;
     } else {
         msjErrorCamp.style.display = 'none';
         if (!expresiones.expCedula.test(cedula)) {
             msjErrorC.style.display = 'block';
-            validacion = false;
+            alertaActiva = true;
         } else {
             msjErrorC.style.display = 'none';
-            validacion = true;
         }
         if (!expresiones.expNombre.test(nombre)) {
             msjErrorN.style.display = 'block';
-            validacion = false;
+            alertaActiva = true;
         }
         else {
             msjErrorN.style.display = 'none';
-            validacion = true;
         }
         if (!expresiones.expPlaca.test(placa)) {
             msjErrorP.style.display = 'block';
-            validacion = false;
+            alertaActiva = true;
         } else {
             msjErrorP.style.display = 'none';
-            validacion = true;
         }
     }
-    return validacion;
+    
+    return !alertaActiva;
 }
 
 export {nuevoVisitante, nuevoVehiculo};

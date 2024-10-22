@@ -35,7 +35,7 @@ app.post("/validarInicioSesion", async (req, res) => {
         let consulta = `
             SELECT *
             FROM USUARIO
-            WHERE NOMBREUSUARIO = '` + req.body.user + `' AND CONTRASENIA = '` + req.body.password + `'`;
+            WHERE NOMBREUSUARIO = '` + req.body.user + `' AND CONTRASENIAUSUARIO = '` + req.body.password + `'`;
         // Realizo la consulta
         const data = await conexion.execute(consulta);
 
@@ -69,10 +69,10 @@ app.post("/validarEntrada", async (req, res) => {
         let consultaVehiculoZona = `
             SELECT *
             FROM Vehiculo v INNER JOIN EntradaSalida es 
-            ON v.placa = es.placa INNER JOIN ZonaParqueo zp 
-            ON es.ID_ZonaParqueo = zp.ID_ZonaParqueo
-            WHERE v.placa = '${placa}'
-            AND zp.Estado = 'Ocupado'`;
+            ON v.placaVehiculo = es.placaVehiculo INNER JOIN ZonaParqueo zp 
+            ON es.ID_ZonaParqueoEntrada = zp.ID_ZonaParqueo
+            WHERE v.placaVehiculo = '${placa}'
+            AND zp.EstadoZona = 'Ocupado'`;
 
         const dataVehiculo = await conexion.execute(consultaVehiculoZona);
 
@@ -87,12 +87,12 @@ app.post("/validarEntrada", async (req, res) => {
         let consultaVisitanteZona = `
             SELECT *
             FROM Vehiculo v INNER JOIN Visitante vi 
-            ON v.cedula = vi.cedula
+            ON v.cedulaVisitante = vi.cedulaVisitante
             INNER JOIN EntradaSalida es 
-            ON v.placa = es.placa INNER JOIN ZonaParqueo zp ON 
-            es.ID_ZonaParqueo = zp.ID_ZonaParqueo
-            WHERE vi.cedula = '${cedula}'
-            AND zp.Estado = 'Ocupado'`;
+            ON v.placaVehiculo = es.placaVehiculo INNER JOIN ZonaParqueo zp ON 
+            es.ID_ZonaParqueoEntrada = zp.ID_ZonaParqueo
+            WHERE vi.cedulaVisitante = '${cedula}'
+            AND zp.EstadoZona = 'Ocupado'`;
         const dataVisitante = await conexion.execute(consultaVisitanteZona);
 
         // Si el visitante está en una zona de parqueo ocupada, se retorna error
@@ -113,6 +113,7 @@ app.post("/validarEntrada", async (req, res) => {
     }
 });
 
+// Obtener las zonas registradas en la base de datos
 app.get("/obtenerZonas", async (req, res) => {
     const conexion = await dataBase.getConnection();
     let consulta = `SELECT * FROM ZonaParqueo`;
@@ -120,9 +121,50 @@ app.get("/obtenerZonas", async (req, res) => {
     res.json(data.rows);
 });
 
-get.post("/registrarEntrada", async (req, res) => {
-    let agregarEntrada = `INSERT INTO EntradaSalida (ID_EntradaSalida, FechaEntrada, placa, ID_ZonaParqueo)
-VALUES (10, CURRENT_TIMESTAMP, '${placa}', '${zona}')`
+app.post("/registrarVisitante", async (req, res) => {
+    const {cedula, nombre} = req.body;
+    if (cedula && nombre) {
+        const conexion = await dataBase.getConnection();
+        let agregarVisitante = `INSERT INTO Visitante (cedulaVisitante, fechaEntradaVisitante, nombreVisitante) VALUES ('${cedula}', CURRENT_TIMESTAMP, '${nombre}')`;
+        const data = await conexion.execute(agregarVisitante);
+        await conexion.commit();
+        console.log("Visitante registrado correctamente");
+        return res.send({status: "ok"});
+    }
+    console.log("Error al registrar el visitante");
+    return res.status(400).send({ status: "Error"});
+});
+
+app.post("/registrarVehiculo", async (req, res) => {
+    const {placa, cedula} = req.body;
+    if (placa && cedula) {
+        const conexion = await dataBase.getConnection();
+        let agregarVehiculo = `INSERT INTO Vehiculo (PlacaVehiculo, CedulaVisitante, FechaEntradaVehiculo) VALUES ('${placa}', '${cedula}', (SELECT fechaEntradaVisitante FROM Visitante WHERE cedulaVisitante = '${cedula}' ORDER BY fechaEntradaVisitante DESC FETCH FIRST 1 ROWS ONLY))`;      
+        const data = await conexion.execute(agregarVehiculo);
+        await conexion.commit();
+        console.log("Vehiculo registrado correctamente");
+        return res.send({status: "ok"});
+    }
+    console.log("Error al registrar el vehiculo");
+    return res.status(400).send({status: "Error"});
+});
+
+app.post("/registrarEntrada", async (req, res) => {
+    const {placa, zona, estadoZona} = req.body;
+    console.log(placa);
+    console.log(zona);
+    console.log(estadoZona);
+    if (placa && zona && estadoZona == 'Disponible') {
+        const conexion = await dataBase.getConnection();
+        let agregarEntrada = `INSERT INTO EntradaSalida (FechaEntrada, placaVehiculo, ID_ZonaParqueoEntrada)
+        VALUES ((SELECT fechaEntradaVehiculo FROM Vehiculo WHERE placaVehiculo = '${placa}' ORDER BY fechaEntradaVehiculo DESC FETCH FIRST 1 ROWS ONLY), '${placa}', '${zona}')`;
+        const data = await conexion.execute(agregarEntrada);
+        await conexion.commit();
+        console.log("Entrada registrada correctamente");
+        return res.send({status: "ok", redirect: "/Pages/Index.html#home"});
+    }
+    console.log("Error al registrar la entrada");
+    return res.status(400).send({status: "Error"});
 });
 
 // Registro Salidas
@@ -136,12 +178,12 @@ app.post("/validarSalida", async (req, res) => {
 
             // Consulta para verificar si el vehículo y el visitante están registrados y en el parqueadero
             let consultaSalida = `
-                SELECT es.ID_EntradaSalida, zp.ID_ZonaParqueo, zp.Estado
-                FROM EntradaSalida es
-                JOIN Vehiculo v ON es.placa = v.placa
-                JOIN Visitante vi ON v.cedula = vi.cedula
-                JOIN ZonaParqueo zp ON es.ID_ZonaParqueo = zp.ID_ZonaParqueo
-                WHERE vi.cedula = '${cedula}' AND v.placa = '${placa}' AND zp.Estado = 'Ocupado'`;
+                SELECT es.FECHAENTRADA, zp.ID_ZonaParqueo, zp.EstadoZona
+                FROM EntradaSalida es INNER JOIN Vehiculo v 
+                ON es.placaVehiculo = v.placaVehiculo INNER JOIN Visitante vi
+                ON v.cedulaVisitante = vi.cedulaVisitante INNER JOIN ZonaParqueo zp 
+                ON es.ID_ZonaParqueoEntrada = zp.ID_ZonaParqueo
+                WHERE vi.cedulaVisitante = '${cedula}' AND v.placaVehiculo = '${placa}' AND zp.EstadoZona = 'Ocupado'`;
 
             const dataSalida = await conexion.execute(consultaSalida);
 
@@ -154,27 +196,26 @@ app.post("/validarSalida", async (req, res) => {
                 let actualizarSalida = `
                     UPDATE EntradaSalida es
                     SET es.FechaSalida = CURRENT_TIMESTAMP
-                    WHERE es.placa = '${placa}'
-                    AND es.ID_ZonaParqueo = (
-                        SELECT e.ID_ZonaParqueo
-                        FROM EntradaSalida e
-                        JOIN Vehiculo v ON e.placa = v.placa
-                        JOIN Visitante vi ON v.cedula = vi.cedula
-                        WHERE vi.cedula = '${cedula}'
-                        AND v.placa = '${placa}'
+                    WHERE es.placaVehiculo = '${placa}'
+                    AND es.FECHAENTRADA = (
+                        SELECT e.FECHAENTRADA
+                        FROM EntradaSalida e INNER JOIN Vehiculo v 
+                        ON e.placaVehiculo = v.placaVehiculo INNER JOIN Visitante vi 
+                        ON v.cedulaVisitante = vi.cedulaVisitante
+                        WHERE vi.cedulaVisitante = '${cedula}' AND v.placaVehiculo = '${placa}'
                     )`;
                 await conexion.execute(actualizarSalida);
 
                 // Actualizar el estado de la zona de parqueo a 'Disponible'
                 let actualizarZona = `
                     UPDATE ZonaParqueo
-                    SET Estado = 'Disponible'
+                    SET EstadoZona = 'Disponible'
                     WHERE ID_ZonaParqueo = (
-                        SELECT es.ID_ZonaParqueo
-                        FROM EntradaSalida es
-                        JOIN Vehiculo v ON es.placa = v.placa
-                        JOIN Visitante vi ON v.cedula = vi.cedula
-                        WHERE vi.cedula = '${cedula}' AND v.placa = '${placa}'
+                        SELECT es.ID_ZONAPARQUEOENTRADA
+                        FROM EntradaSalida es INNER JOIN Vehiculo v 
+                        ON es.placaVehiculo = v.placaVehiculo INNER JOIN Visitante vi 
+                        ON v.cedulaVisitante = vi.cedulaVisitante
+                        WHERE vi.cedulaVisitante = '${cedula}' AND v.placaVehiculo = '${placa}'
                     )`;
                 await conexion.execute(actualizarZona);
 
