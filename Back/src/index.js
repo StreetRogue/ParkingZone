@@ -175,22 +175,30 @@ app.post("/validarSalida", async (req, res) => {
         try {
             // Conexión a Base de Datos
             conexion = await dataBase.getConnection();
+            console.log("Registro de Salida");
 
-            // Consulta para verificar si el vehículo y el visitante están registrados y en el parqueadero
-            let consultaSalida = `
-                SELECT es.FECHAENTRADA, zp.ID_ZonaParqueo, zp.EstadoZona
-                FROM EntradaSalida es INNER JOIN Vehiculo v 
-                ON es.placaVehiculo = v.placaVehiculo INNER JOIN Visitante vi
-                ON v.cedulaVisitante = vi.cedulaVisitante INNER JOIN ZonaParqueo zp 
-                ON es.ID_ZonaParqueoEntrada = zp.ID_ZonaParqueo
-                WHERE vi.cedulaVisitante = '${cedula}' AND v.placaVehiculo = '${placa}' AND zp.EstadoZona = 'Ocupado'`;
-
-            const dataSalida = await conexion.execute(consultaSalida);
-
-            // Si no hay registro, se retorna error
-            if (dataSalida.rows.length === 0) {
-                console.log("Salida no válida: el vehículo no se encuentra en el parqueadero");
-                return res.status(400).send({ status: "Error", message: "El vehículo no se encuentra registrado o ya ha salido." });
+            // Consulta para verificar si el vehículo
+            let buscarAuto = `SELECT * FROM entradaSalida WHERE placaVehiculo = '${placa}' and FECHASALIDA IS NULL`
+            const dataAuto = await conexion.execute(buscarAuto);
+            if (dataAuto.rows.length == 0) {
+                console.log("No se encuentra un registro de entrada para el vehiculo");
+                return res.status(400).send({ status: "Error", message: "No se encontró un registro de entrada para el vehiculo" });
+            } else {
+                // Consulta si el visitante se encuentra en el parqueadero
+                let buscarVisitante = `SELECT * FROM entradaSalida INNER JOIN Visitante on entradaSalida.FECHAENTRADA = Visitante.FECHAENTRADAVISITANTE WHERE cedulaVisitante = '${cedula}' and FECHASALIDA IS NULL`;
+                const dataVisitante = await conexion.execute(buscarVisitante);
+                if (dataVisitante.rows.length == 0) {
+                    console.log("No se encuentra un registro de entrada para la persona");
+                    return res.status(400).send({ status: "Error", message: "No se encontró un registro de entrada para la persona" });
+                }
+            }
+            
+            // Verifica la coincidencia de los datos
+            let coincidenciaInfo = `SELECT * FROM entradaSalida INNER JOIN Vehiculo ON entradaSalida.FECHAENTRADA = vehiculo.FECHAENTRADAVEHICULO INNER JOIN Visitante ON vehiculo.CEDULAVISITANTE = visitante.CEDULAVISITANTE WHERE vehiculo.placavehiculo = '${placa}' and visitante.cedulavisitante = '${cedula}' and fechaSalida IS NULL`
+            const dataCoincidencia = await conexion.execute(coincidenciaInfo);
+            if (dataCoincidencia.rows.length == 0) {
+                console.log("La cedula y placa no coinciden con la informacion de registro");
+                return res.status(400).send({ status: "Error", message: "La información no coincide con el registro o ya se registro la salida" });
             } else {
                 // Actualizar fecha del sistema
                 let actualizarSalida = `
@@ -200,7 +208,8 @@ app.post("/validarSalida", async (req, res) => {
                     AND es.FECHAENTRADA = (
                         SELECT e.FECHAENTRADA
                         FROM EntradaSalida e INNER JOIN Vehiculo v 
-                        ON e.placaVehiculo = v.placaVehiculo INNER JOIN Visitante vi 
+                        ON e.placaVehiculo = v.placaVehiculo 
+                        INNER JOIN Visitante vi 
                         ON v.cedulaVisitante = vi.cedulaVisitante
                         WHERE vi.cedulaVisitante = '${cedula}' AND v.placaVehiculo = '${placa}'
                     )`;
@@ -212,8 +221,10 @@ app.post("/validarSalida", async (req, res) => {
                     SET EstadoZona = 'Disponible'
                     WHERE ID_ZonaParqueo = (
                         SELECT es.ID_ZONAPARQUEOENTRADA
-                        FROM EntradaSalida es INNER JOIN Vehiculo v 
-                        ON es.placaVehiculo = v.placaVehiculo INNER JOIN Visitante vi 
+                        FROM EntradaSalida es 
+                        INNER JOIN Vehiculo v 
+                        ON es.placaVehiculo = v.placaVehiculo 
+                        INNER JOIN Visitante vi 
                         ON v.cedulaVisitante = vi.cedulaVisitante
                         WHERE vi.cedulaVisitante = '${cedula}' AND v.placaVehiculo = '${placa}'
                     )`;

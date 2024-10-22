@@ -1,7 +1,3 @@
-// Importamos las clases 
-import {Visitante} from '../Classes/Visitante.js';
-import {Vehiculo} from '../Classes/Vehiculo.js';
-
 // Seleccionamos el botón de registrar
 const registrarBtn = document.getElementById('boton-registrar');
 let nuevoVisitante;
@@ -51,16 +47,15 @@ registrarBtn.addEventListener('click', async function(e) {
 
 function validarForm (cedula, nombre, placa) {
     const expresiones = {
-        expCedula: /^[1-9][0-9]{5,9}$/,
-        expNombre: /^[a-zA-ZÀ-ÿ\s]{3,50}$/,
-        expPlaca: /^[a-zA-Z]{3}[0-9]{2}[0-9a-zA-Z]{1}$/
+        expCedula: /^[1-9][0-9]{1,9}$/,
+        expNombre: /^[a-zA-ZÀ-ÿ\s]{1,50}$/,
+        expPlaca: /^[A-Z]{3}[0-9]{2}[0-9A-Z]{1}$/
     }
     const msjErrorCamp = document.getElementById('error-campos');
     const msjErrorC = document.getElementById('error-cedula');
     const msjErrorN = document.getElementById('error-nombre');
     const msjErrorP = document.getElementById('error-placa');
     let alertaActiva = false;
-    let validacion = true;
     if (!(cedula && nombre && placa)) {
         msjErrorCamp.innerHTML = 'Todos los campos son obligatorios';
         msjErrorCamp.style.display = 'block';
@@ -90,5 +85,3 @@ function validarForm (cedula, nombre, placa) {
     
     return !alertaActiva;
 }
-
-export {nuevoVisitante, nuevoVehiculo};
