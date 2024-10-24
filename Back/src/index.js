@@ -211,7 +211,9 @@ app.post("/validarSalida", async (req, res) => {
                         ON e.placaVehiculo = v.placaVehiculo 
                         INNER JOIN Visitante vi 
                         ON v.cedulaVisitante = vi.cedulaVisitante
-                        WHERE vi.cedulaVisitante = '${cedula}' AND v.placaVehiculo = '${placa}'
+                        WHERE vi.cedulaVisitante = '${cedula}' AND v.placaVehiculo = '${placa}' 
+                        ORDER BY e.FECHAENTRADA DESC
+                        FETCH FIRST 1 ROWS ONLY
                     )`;
                 await conexion.execute(actualizarSalida);
 
@@ -227,6 +229,7 @@ app.post("/validarSalida", async (req, res) => {
                         INNER JOIN Visitante vi 
                         ON v.cedulaVisitante = vi.cedulaVisitante
                         WHERE vi.cedulaVisitante = '${cedula}' AND v.placaVehiculo = '${placa}'
+                        FETCH FIRST 1 ROWS ONLY
                     )`;
                 await conexion.execute(actualizarZona);
 

@@ -262,7 +262,7 @@ INSERT INTO ZonaParqueo (ID_ZonaParqueo) VALUES ('B6');
 INSERT INTO ZonaParqueo (ID_ZonaParqueo) VALUES ('B7');
 
 delete from zonaParqueo
-UPDATE ZonaParqueo SET EstadoZona = 'Disponible';
+UPDATE ZonaParqueo SET Estado = 'Disponible' WHERE ID_ZonaParqueo LIKE 'B2';
 
 INSERT INTO EntradaSalida (ID_EntradaSalida, FechaEntrada, placa, ID_ZonaParqueo)
 VALUES (1, TO_TIMESTAMP('16-10-2024 08:00:00', 'DD-MM-YY HH24:MI:SS'), 'ABC123', 'A1');
@@ -287,45 +287,17 @@ VALUES (
      'QKR69H', 
      'B1');
 
-SELECT *
+SELECT FECHAENTRADA, PLACAVEHICULO
 FROM entradaSalida
-WHERE placaVehiculo = 'ABC123' and FECHASALIDA IS NULL;
-
-SELECT *
-FROM entradaSalida INNER JOIN Visitante
-on entradaSalida.FECHAENTRADA = Visitante.FECHAENTRADAVISITANTE
-WHERE cedulaVisitante = '1059236559' and FECHASALIDA IS NULL;
-
-SELECT *
-FROM entradaSalida INNER JOIN Vehiculo
-on entradaSalida.FECHAENTRADA = vehiculo.FECHAENTRADAVEHICULO
-INNER JOIN Visitante
-ON entradaSalida.FECHAENTRADA = Visitante.FECHAENTRADAVISITANTE;
-WHERE 
-
-SELECT *
-FROM entradaSalida
-INNER JOIN Vehiculo
-    ON entradaSalida.FECHAENTRADA = vehiculo.FECHAENTRADAVEHICULO
-INNER JOIN Visitante
-    ON vehiculo.CEDULAVISITANTE = visitante.CEDULAVISITANTE
-WHERE vehiculo.placavehiculo = 'ABC123' and visitante.cedulavisitante = '1094981170' and fechaSalida IS NULL
+WHERE placaVehiculo = 'ABC123' and FECHASALIDA IS NOT NULL;
 
 SELECT fechaEntradaVehiculo
 FROM Vehiculo
 WHERE placaVehiculo = 'QKR69H'
 
-select * from visitante
-
-delete from visitante where NOMBREVISITANTE = 'Chaveztia'
-
-DELETE FROM EntradaSalida WHERE fechaEntrada = '21/10/24 05:48:41,056000000 PM';
+DELETE FROM EntradaSalida;
 
 UPDATE EntradaSalida SET FechaSalida = CURRENT_TIMESTAMP WHERE ID_EntradaSalida = 10;
 UPDATE EntradaSalida SET FechaSalida = '16-10-2024 10:00:00' WHERE ID_EntradaSalida = 1;
-
-delete from entradaSalida;
-delete from visitante;
-delete from vehiculo;
 
 COMMIT;

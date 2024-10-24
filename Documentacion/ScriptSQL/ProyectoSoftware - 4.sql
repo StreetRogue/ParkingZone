@@ -311,6 +311,52 @@ INNER JOIN Visitante
     ON vehiculo.CEDULAVISITANTE = visitante.CEDULAVISITANTE
 WHERE vehiculo.placavehiculo = 'ABC123' and visitante.cedulavisitante = '1094981170' and fechaSalida IS NULL
 
+SELECT DISTINCT e.FECHAENTRADA
+                        FROM EntradaSalida e INNER JOIN Vehiculo v 
+                        ON e.placaVehiculo = v.placaVehiculo 
+                        INNER JOIN Visitante vi 
+                        ON v.cedulaVisitante = vi.cedulaVisitante
+                        WHERE vi.cedulaVisitante = '1094981170' AND v.placaVehiculo = 'PPP777' 
+                        ORDER BY e.FECHAENTRADA DESC
+--                        FETCH FIRST 1 ROWS ONLY
+                        
+ SELECT DISTINCT es.ID_ZONAPARQUEOENTRADA
+                        FROM EntradaSalida es 
+                        INNER JOIN Vehiculo v 
+                        ON es.placaVehiculo = v.placaVehiculo 
+                        INNER JOIN Visitante vi 
+                        ON v.cedulaVisitante = vi.cedulaVisitante
+                        WHERE vi.cedulaVisitante = '1094981170' AND v.placaVehiculo = 'PPP777'
+                        --FETCH FIRST 1 ROWS ONLY
+                        
+
+SELECT e.FECHAENTRADA, e.FechaSalida, e.ID_ZonaParqueoEntrada -- seleccionar las columnas específicas de EntradaSalida
+-- si necesitas columnas adicionales de Vehiculo o Visitante, añádelas explícitamente aquí
+FROM EntradaSalida e
+INNER JOIN Vehiculo v 
+    ON e.placaVehiculo = v.placaVehiculo AND e.FechaEntrada = v.FechaEntradaVehiculo
+INNER JOIN Visitante vi 
+    ON v.cedulaVisitante = vi.cedulaVisitante
+WHERE vi.cedulaVisitante = '1094981170' 
+  AND v.placaVehiculo = 'PPP777' 
+  
+SELECT DISTINCT  e.FechaEntrada, e.FechaSalida, e.ID_ZonaParqueoEntrada
+FROM EntradaSalida e
+INNER JOIN Vehiculo v 
+    ON e.placaVehiculo = v.placaVehiculo AND e.FechaEntrada = v.FechaEntradaVehiculo
+WHERE v.cedulaVisitante = '1094981170'
+GROUP BY e.FechaEntrada, e.FechaSalida, e.ID_ZonaParqueoEntrada;
+
+
+
+
+
+
+SELECT *
+FROM EntradaS
+
+
+
 SELECT fechaEntradaVehiculo
 FROM Vehiculo
 WHERE placaVehiculo = 'QKR69H'
