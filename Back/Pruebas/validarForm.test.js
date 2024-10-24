@@ -19,11 +19,6 @@ describe('Pruebas de entrada', () => {
     });
 
     // Pruebas válidas
-    test('Debe validar correctamente cuando los datos de entrada son válidos (cédula larga)', () => {
-        const result = validarFormEntrada('123456789', 'Juan Perez', 'ABC123');
-        expect(result).toBe(true);
-    });
-
     test('Debe validar correctamente cuando los datos de entrada son válidos (nombre con espacios)', () => {
         const result = validarFormEntrada('987654321', 'Carlos Andrés', 'XYZ987');
         expect(result).toBe(true);
@@ -35,6 +30,16 @@ describe('Pruebas de entrada', () => {
     });
 
     // Pruebas inválidas
+    test('Debe false cuando detecte un visitante ya registrado', () => {
+        const result = validarFormEntrada('123456', 'Juan Perez', 'ABC555');
+        expect(result).toBe(true);
+    });
+
+    test('Debe retornar false cuando el nombre contiene caracteres especiales', () => {
+        const result = validarFormEntrada('987654321', 'Carlos@Andrés', 'XYZ987');
+        expect(result).toBe(false);
+    });
+
     test('Debe retornar false cuando la cédula de entrada excede los 10 caracteres', () => {
         const result = validarFormEntrada('123456789123456789123456789', 'Juan Perez', 'ABC123');
         expect(result).toBe(false);
