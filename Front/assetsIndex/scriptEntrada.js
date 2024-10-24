@@ -1,52 +1,47 @@
 // Encapsulamos la configuración del botón de registrar en una función
-const setupRegistrarBtn = () => {
-    const registrarBtn = document.getElementById('boton-registrar');
-    let nuevoVisitante;
-    let nuevoVehiculo;
+const registrarBtn = document.getElementById('boton-registrar');
+let nuevoVisitante;
+let nuevoVehiculo;
 
-    // Verificamos que el botón existe antes de añadir el event listener
-    if (registrarBtn) {
-        registrarBtn.addEventListener('click', async function(e) {
-            e.preventDefault(); // Evitar comportamiento por defecto del botón
+registrarBtn.addEventListener('click', async function(e) {
+    e.preventDefault(); // Evitar comportamiento por defecto del botón
 
-            // Obtenemos los valores de los campos
-            const cedula = document.getElementById('entrada-cedula').value;
-            const nombre = document.getElementById('entrada-nombre').value;
-            const placa = document.getElementById('entrada-placa').value;
-            const msjError = document.getElementById('error-campos');
+    // Obtenemos los valores de los campos
+    const cedula = document.getElementById('entrada-cedula').value;
+    const nombre = document.getElementById('entrada-nombre').value;
+    const placa = document.getElementById('entrada-placa').value;
+    const msjError = document.getElementById('error-campos');
 
-            // Validación de campos
-            let validacion = validarForm(cedula, nombre, placa);
-            if (validacion) {
-                // Llamado al BackEnd para validar el registro del visitante y vehículo
-                const res = await fetch("http://localhost:3000/validarEntrada", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        cedula: cedula,
-                        nombre: nombre,
-                        placa: placa
-                    })
-                });
-
-                // Verificar si la respuesta fue exitosa
-                const resJson = await res.json();
-                if (!res.ok) {
-                    msjError.innerHTML = resJson.message;
-                    msjError.style.display = 'block';
-                    console.log(resJson.message);
-                } else if (resJson.redirect) {
-                    // Redirigir a la página de seleccionEspacio
-                    localStorage.setItem('nuevoVisitante', JSON.stringify({ cedula: cedula, nombre: nombre }));
-                    localStorage.setItem('nuevoVehiculo', JSON.stringify({ placa: placa, cedula: cedula }));
-                    window.location.href = resJson.redirect;
-                }
-            }
+    // Validación de campos
+    let validacion = validarForm(cedula, nombre, placa);
+    if (validacion) {
+        // Llamado al BackEnd para validar el registro del visitante y vehículo
+        const res = await fetch("http://localhost:3000/validarEntrada", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                cedula: cedula,
+                nombre: nombre,
+                placa: placa
+            })
         });
+
+        // Verificar si la respuesta fue exitosa
+        const resJson = await res.json();
+        if (!res.ok) {
+            msjError.innerHTML = resJson.message;
+            msjError.style.display = 'block';
+            console.log(resJson.message);
+        } else if (resJson.redirect) {
+            // Redirigir a la página de seleccionEspacio
+            localStorage.setItem('nuevoVisitante', JSON.stringify({ cedula: cedula, nombre: nombre }));
+            localStorage.setItem('nuevoVehiculo', JSON.stringify({ placa: placa, cedula: cedula }));
+            window.location.href = resJson.redirect;
+        }
     }
-};
+});
 
 // Función de validación de formulario
 function validarForm(cedula, nombre, placa) {
@@ -89,6 +84,3 @@ function validarForm(cedula, nombre, placa) {
     
     return !alertaActiva;
 }
-
-// Exportamos las funciones para que puedan ser usadas en las pruebas
-module.exports = { validarForm, setupRegistrarBtn };
