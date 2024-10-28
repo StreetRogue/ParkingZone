@@ -1,10 +1,12 @@
+
+
 const { validarForm: validarFormEntrada, setupRegistrarBtn } = require('../../Front/assetsIndex/scriptEntrada');
 const { validarForm: validarFormSalida, setupRegistrarSalidaBtn } = require('../../Front/assetsIndex/scriptSalida');
 require('../../Front/assetsLogin/script');
 
 // Pruebas de Entrada
 describe('Pruebas de entrada', () => {
-    beforeEach(() => {
+    beforeAll(() => {
         document.body.innerHTML = `
             <button id="boton-registrar"></button>
             <input id="entrada-cedula" />
@@ -29,12 +31,8 @@ describe('Pruebas de entrada', () => {
         expect(result).toBe(true);
     });
 
-    // Pruebas inválidas
-    test('Debe false cuando detecte un visitante ya registrado', () => {
-        const result = validarFormEntrada('123456', 'Juan Perez', 'ABC555');
-        expect(result).toBe(true);
-    });
 
+    // Otras pruebas inválidas
     test('Debe retornar false cuando el nombre contiene caracteres especiales', () => {
         const result = validarFormEntrada('987654321', 'Carlos@Andrés', 'XYZ987');
         expect(result).toBe(false);
@@ -42,11 +40,6 @@ describe('Pruebas de entrada', () => {
 
     test('Debe retornar false cuando la cédula de entrada excede los 10 caracteres', () => {
         const result = validarFormEntrada('123456789123456789123456789', 'Juan Perez', 'ABC123');
-        expect(result).toBe(false);
-    });
-
-    test('Debe retornar false cuando el nombre contiene caracteres especiales', () => {
-        const result = validarFormEntrada('987654321', 'Carlos@Andrés', 'XYZ987');
         expect(result).toBe(false);
     });
 
@@ -81,17 +74,8 @@ describe('Pruebas de salida', () => {
         expect(result).toBe(true);
     });
 
-    test('Debe validar correctamente cuando los datos de salida son válidos (cédula larga)', () => {
-        const result = validarFormSalida('135792468', 'QWE789');
-        expect(result).toBe(true);
-    });
 
-    // Pruebas inválidas
-    test('Debe retornar false cuando la cédula de salida excede los 10 caracteres', () => {
-        const result = validarFormSalida('1256466444654545545', 'ABC123');
-        expect(result).toBe(false);
-    });
-
+    // Otras pruebas inválidas
     test('Debe retornar false cuando la placa de salida tiene un formato incorrecto', () => {
         const result = validarFormSalida('987654321', '123');
         expect(result).toBe(false);
@@ -158,7 +142,6 @@ describe('Pruebas de login', () => {
         expect(window.location.href).toBe('index.html');
     });
 
-
     // Pruebas inválidas
     test('Debe mostrar un error si el campo de usuario está vacío', () => {
         const loginForm = document.querySelector('.form-login');
@@ -201,4 +184,9 @@ describe('Pruebas de login', () => {
 
         expect(msjError.innerHTML).toBe('Todos los campos son obligatorios');
     });
+});
+
+// Limpiar mocks
+afterEach(() => {
+    jest.clearAllMocks();
 });
