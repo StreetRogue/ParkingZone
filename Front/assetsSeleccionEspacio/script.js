@@ -73,6 +73,14 @@ buttonsB.forEach(function(buttonB, index) {
         };
     } else {
         parrafo.style.backgroundColor = "#FFE701";
+        buttonB.onclick = function() {
+            alertaEspacio.classList.add('alerta-activa');
+            fondo.classList.add('overlay-activo');
+            btnRegresar.addEventListener("click", function () {
+                alertaEspacio.classList.remove('alerta-activa');
+                fondo.classList.remove('overlay-activo');
+            });
+        };
     }
 });
 
@@ -118,6 +126,8 @@ btnConfirmarSeleccion.addEventListener("click", async function () {
     const resEntradaJson = await resEntrada.json();
     console.log(resEntrada.ok);
     if (resEntrada.ok && resVehiculo.ok && resVisitante.ok) {
+        alertaConfir.classList.remove('alerta-activa');
+        fondo.classList.remove('overlay-activo');
         alertaSelec.classList.add('alerta-activa');
         fondo.classList.add('overlay-activo');
         btnContinuar.addEventListener("click", async function () {
