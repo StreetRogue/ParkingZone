@@ -1,6 +1,7 @@
 const express = require('express');
 const dataBase = require("./dataBase");
 const cors = require("cors");
+const oracledb = require('oracledb');
 
 // Servidor
 const app = express();
@@ -28,33 +29,33 @@ app.get("/", (req, res) => {
 
 // Validar Inicio de Sesion
 app.post("/validarInicioSesion", async (req, res) => {
-    // Validar que los campos no esten vacios
+    // Validar que los campos no estén vacíos
     if (req.body.user && req.body.password) {
-        // Conexion a Base de Datos
+        // Conexión a la base de datos
         const conexion = await dataBase.getConnection();
-        let consulta = `
+
+        // Definir la consulta con parámetros
+        const consulta = `
             SELECT *
             FROM USUARIO
-            WHERE NOMBREUSUARIO = '` + req.body.user + `' AND CONTRASENIAUSUARIO = '` + req.body.password + `'`;
-        // Realizo la consulta
-        const data = await conexion.execute(consulta);
+            WHERE NOMBREUSUARIO = :userName AND CONTRASENIAUSUARIO = :passwordUser
+        `;
 
-        // Validar que el administrador exista
-        if (data.rows.length == 0) {
-            console.log("El administrador no existe");
-            // Cerrar conexion
-            conexion.close();
-            return res.status(400).send({ status: "Error" });
+        // Ejecutar la consulta de forma segura usando parámetros
+        const data = await conexion.execute(consulta, { userName: req.body.user, passwordUser: req.body.password });
+        console.log(consulta);
+        // Validar que el usuario exista
+        if (data.rows.length === 0) {
+            console.log("El usuario no existe");
+            // Cerrar conexión
+            await conexion.close();
+            return res.status(400).send({ status: "Error", message: "Usuario o contraseña incorrectos" });
         } else {
-            console.log("Inicio de sesion correcto");
-            // Cerrar conexion
-            conexion.close();
-
-            return res.send({ status: "ok", message: "Inicio de sesion correcto", redirect: "/Pages/Index.html#home" });
-
+            console.log("Inicio de sesión correcto");
+            // Cerrar conexión
+            await conexion.close();
+            return res.send({ status: "ok", message: "Inicio de sesión correcto", redirect: "/Pages/Index.html#home" });
         }
-    } else {
-        return res.status(400).send({ status: "Error" });
     }
 });
 
@@ -71,10 +72,10 @@ app.post("/validarEntrada", async (req, res) => {
             FROM Vehiculo v INNER JOIN EntradaSalida es 
             ON v.placaVehiculo = es.placaVehiculo INNER JOIN ZonaParqueo zp 
             ON es.ID_ZonaParqueoEntrada = zp.ID_ZonaParqueo
-            WHERE v.placaVehiculo = '${placa}'
+            WHERE v.placaVehiculo = :placa
             AND zp.EstadoZona = 'Ocupado'`;
 
-        const dataVehiculo = await conexion.execute(consultaVehiculoZona);
+        const dataVehiculo = await conexion.execute(consultaVehiculoZona, {placa: placa});
 
         // Si el vehículo está en una zona de parqueo ocupada, se retorna error
         if (dataVehiculo.rows.length > 0) {
@@ -91,9 +92,9 @@ app.post("/validarEntrada", async (req, res) => {
             INNER JOIN EntradaSalida es 
             ON v.placaVehiculo = es.placaVehiculo INNER JOIN ZonaParqueo zp ON 
             es.ID_ZonaParqueoEntrada = zp.ID_ZonaParqueo
-            WHERE vi.cedulaVisitante = '${cedula}'
+            WHERE vi.cedulaVisitante = :cedula
             AND zp.EstadoZona = 'Ocupado'`;
-        const dataVisitante = await conexion.execute(consultaVisitanteZona);
+        const dataVisitante = await conexion.execute(consultaVisitanteZona, {cedula: cedula});
 
         // Si el visitante está en una zona de parqueo ocupada, se retorna error
         if (dataVisitante.rows.length > 0) {
@@ -125,8 +126,8 @@ app.post("/registrarVisitante", async (req, res) => {
     const {cedula, nombre} = req.body;
     if (cedula && nombre) {
         const conexion = await dataBase.getConnection();
-        let agregarVisitante = `INSERT INTO Visitante (cedulaVisitante, fechaEntradaVisitante, nombreVisitante) VALUES ('${cedula}', CURRENT_TIMESTAMP, '${nombre}')`;
-        const data = await conexion.execute(agregarVisitante);
+        let agregarVisitante = `INSERT INTO Visitante (cedulaVisitante, fechaEntradaVisitante, nombreVisitante) VALUES (:cedula, CURRENT_TIMESTAMP, :nombre)`;
+        const data = await conexion.execute(agregarVisitante, {cedula: cedula, nombre:nombre});
         await conexion.commit();
         console.log("Visitante registrado correctamente");
         return res.send({status: "ok"});
@@ -139,8 +140,8 @@ app.post("/registrarVehiculo", async (req, res) => {
     const {placa, cedula} = req.body;
     if (placa && cedula) {
         const conexion = await dataBase.getConnection();
-        let agregarVehiculo = `INSERT INTO Vehiculo (PlacaVehiculo, CedulaVisitante, FechaEntradaVehiculo) VALUES ('${placa}', '${cedula}', (SELECT fechaEntradaVisitante FROM Visitante WHERE cedulaVisitante = '${cedula}' ORDER BY fechaEntradaVisitante DESC FETCH FIRST 1 ROWS ONLY))`;      
-        const data = await conexion.execute(agregarVehiculo);
+        let agregarVehiculo = `INSERT INTO Vehiculo (PlacaVehiculo, CedulaVisitante, FechaEntradaVehiculo) VALUES (:placa, :cedula, (SELECT fechaEntradaVisitante FROM Visitante WHERE cedulaVisitante = :cedula ORDER BY fechaEntradaVisitante DESC FETCH FIRST 1 ROWS ONLY))`;      
+        const data = await conexion.execute(agregarVehiculo, {placa: placa, cedula: cedula});
         await conexion.commit();
         console.log("Vehiculo registrado correctamente");
         return res.send({status: "ok"});
@@ -157,8 +158,8 @@ app.post("/registrarEntrada", async (req, res) => {
     if (placa && zona && estadoZona == 'Disponible') {
         const conexion = await dataBase.getConnection();
         let agregarEntrada = `INSERT INTO EntradaSalida (FechaEntrada, placaVehiculo, ID_ZonaParqueoEntrada)
-        VALUES ((SELECT fechaEntradaVehiculo FROM Vehiculo WHERE placaVehiculo = '${placa}' ORDER BY fechaEntradaVehiculo DESC FETCH FIRST 1 ROWS ONLY), '${placa}', '${zona}')`;
-        const data = await conexion.execute(agregarEntrada);
+        VALUES ((SELECT fechaEntradaVehiculo FROM Vehiculo WHERE placaVehiculo = :placa ORDER BY fechaEntradaVehiculo DESC FETCH FIRST 1 ROWS ONLY), :placa, :zona)`;
+        const data = await conexion.execute(agregarEntrada, {placa: placa, zona: zona});
         await conexion.commit();
         console.log("Entrada registrada correctamente");
         return res.send({status: "ok", redirect: "/Pages/Index.html#home"});
@@ -178,15 +179,15 @@ app.post("/validarSalida", async (req, res) => {
             console.log("Registro de Salida");
 
             // Consulta para verificar si el vehículo
-            let buscarAuto = `SELECT * FROM entradaSalida WHERE placaVehiculo = '${placa}' and FECHASALIDA IS NULL`
-            const dataAuto = await conexion.execute(buscarAuto);
+            let buscarAuto = `SELECT * FROM entradaSalida WHERE placaVehiculo = :placa and FECHASALIDA IS NULL`
+            const dataAuto = await conexion.execute(buscarAuto, {placa: placa});
             if (dataAuto.rows.length == 0) {
                 console.log("No se encuentra un registro de entrada para el vehiculo");
                 return res.status(400).send({ status: "Error", message: "No se encontró un registro de entrada para el vehiculo" });
             } else {
                 // Consulta si el visitante se encuentra en el parqueadero
-                let buscarVisitante = `SELECT * FROM entradaSalida INNER JOIN Visitante on entradaSalida.FECHAENTRADA = Visitante.FECHAENTRADAVISITANTE WHERE cedulaVisitante = '${cedula}' and FECHASALIDA IS NULL`;
-                const dataVisitante = await conexion.execute(buscarVisitante);
+                let buscarVisitante = `SELECT * FROM entradaSalida INNER JOIN Visitante on entradaSalida.FECHAENTRADA = Visitante.FECHAENTRADAVISITANTE WHERE cedulaVisitante = :cedula and FECHASALIDA IS NULL`;
+                const dataVisitante = await conexion.execute(buscarVisitante, {cedula: cedula});
                 if (dataVisitante.rows.length == 0) {
                     console.log("No se encuentra un registro de entrada para la persona");
                     return res.status(400).send({ status: "Error", message: "No se encontró un registro de entrada para la persona" });
@@ -194,8 +195,8 @@ app.post("/validarSalida", async (req, res) => {
             }
             
             // Verifica la coincidencia de los datos
-            let coincidenciaInfo = `SELECT * FROM entradaSalida INNER JOIN Vehiculo ON entradaSalida.FECHAENTRADA = vehiculo.FECHAENTRADAVEHICULO INNER JOIN Visitante ON vehiculo.CEDULAVISITANTE = visitante.CEDULAVISITANTE WHERE vehiculo.placavehiculo = '${placa}' and visitante.cedulavisitante = '${cedula}' and fechaSalida IS NULL`
-            const dataCoincidencia = await conexion.execute(coincidenciaInfo);
+            let coincidenciaInfo = `SELECT * FROM entradaSalida INNER JOIN Vehiculo ON entradaSalida.FECHAENTRADA = vehiculo.FECHAENTRADAVEHICULO INNER JOIN Visitante ON vehiculo.CEDULAVISITANTE = visitante.CEDULAVISITANTE WHERE vehiculo.placavehiculo = :placa and visitante.cedulavisitante = :cedula and fechaSalida IS NULL`
+            const dataCoincidencia = await conexion.execute(coincidenciaInfo, {placa: placa, cedula: cedula});
             if (dataCoincidencia.rows.length == 0) {
                 console.log("La cedula y placa no coinciden con la informacion de registro");
                 return res.status(400).send({ status: "Error", message: "La información no coincide con el registro o ya se registro la salida" });
@@ -204,18 +205,18 @@ app.post("/validarSalida", async (req, res) => {
                 let actualizarSalida = `
                     UPDATE EntradaSalida es
                     SET es.FechaSalida = CURRENT_TIMESTAMP
-                    WHERE es.placaVehiculo = '${placa}'
+                    WHERE es.placaVehiculo = :placa
                     AND es.FECHAENTRADA = (
                         SELECT e.FECHAENTRADA
                         FROM EntradaSalida e INNER JOIN Vehiculo v 
                         ON e.placaVehiculo = v.placaVehiculo 
                         INNER JOIN Visitante vi 
                         ON v.cedulaVisitante = vi.cedulaVisitante
-                        WHERE vi.cedulaVisitante = '${cedula}' AND v.placaVehiculo = '${placa}' 
+                        WHERE vi.cedulaVisitante = :cedula AND v.placaVehiculo = :placa
                         ORDER BY e.FECHAENTRADA DESC
                         FETCH FIRST 1 ROWS ONLY
                     )`;
-                await conexion.execute(actualizarSalida);
+                await conexion.execute(actualizarSalida, {placa: placa, cedula: cedula});
 
                 // Actualizar el estado de la zona de parqueo a 'Disponible'
                 let actualizarZona = `
@@ -228,12 +229,12 @@ app.post("/validarSalida", async (req, res) => {
                         ON es.placaVehiculo = v.placaVehiculo 
                         INNER JOIN Visitante vi 
                         ON v.cedulaVisitante = vi.cedulaVisitante
-                        WHERE vi.cedulaVisitante = '${cedula}' AND v.placaVehiculo = '${placa}'
+                        WHERE vi.cedulaVisitante = :cedula AND v.placaVehiculo = :placa
                         FETCH FIRST 1 ROWS ONLY
                     )`;
-                await conexion.execute(actualizarZona);
+                await conexion.execute(actualizarZona, {cedula: cedula, placa: placa});
 
-                await conexion.commit(); // commit 
+                await conexion.commit(); // commit
                 console.log("Salida registrada exitosamente");
                 return res.send({ status: "ok", message: "Validación exitosa", redirect: "Index.html#home" });
             }

@@ -1,23 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Seleccionamos el formulario de login
     const loginForm = document.querySelector('.form-login');
+    const msjError = document.getElementById('alerta-error');
 
-    // Evento cuando se envía el formulario de login
+    // Evento al enviar el formulario de login
     loginForm.addEventListener('submit', async function(e) {
-        
         e.preventDefault(); // Evitar el envío del formulario
 
-        // Obtenemos los valores de los campos
-        const user = document.getElementById('name').value;
-        const password = document.getElementById('password').value;
+        // Obtenemos y limpiamos los valores de los campos
+        const user = document.getElementById('name').value.trim();
+        const password = document.getElementById('password').value.trim();
 
-        const msjError = document.getElementById('alerta-error');
+        // Validación de campos vacíos
+        if (!user || !password) {
+            msjError.textContent = "Todos los campos son obligatorios";
+            return;
+        }
 
-        // Comprobacion de los campos
-        if (user && password) {
-            // LLamado al BackEnd
-            const res = await fetch("http://localhost:3000/validarInicioSesion", {
-                method:"POST",
+        try {
+            // Llamado al Backend usando fetch
+            const response = await fetch("http://localhost:3000/validarInicioSesion", {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -27,20 +29,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
             });
 
-            // No se ha encontrado el administrador en la base de datos
-            if (!res.ok) {
-                msjError.innerHTML = "Usuario y/o Contraseña incorrecto(s)";
+            if (!response.ok) {
+                msjError.textContent = "Usuario y/o Contraseña incorrecto(s)";
+                return;
             }
 
-            const resJson = await res.json();
+            const responseData = await response.json();
 
-            // Si los datos son correctos, redireccionamos a landing_page.html
-            if (resJson.redirect) {
-                window.location.href = resJson.redirect;
+            // Si el backend indica redirección, redirigimos
+            if (responseData.redirect) {
+                window.location.href = responseData.redirect;
             }
-        } else  if (!user || !password) {
-            msjError.innerHTML = "Todos los campos son obligatorios";
+        } catch (error) {
+            msjError.textContent = "Error al conectar con el servidor. Intente nuevamente.";
         }
-        
     });
 });
