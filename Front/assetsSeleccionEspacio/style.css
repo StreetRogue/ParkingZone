@@ -231,20 +231,33 @@ button:hover {
 }
 
 .cabecera h2 {
+    width: 100%;
     color: #FFFFFF;
     font-size: 1.8rem;
     position: absolute;
+    display: flex;
+    justify-content: center;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.alerta .botones {
+#alerta-confirmacion .botones {
     width: 60%;
     position: relative;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#alerta-seleccion .botones, #alerta-espacio-no-disponible .botones {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;            
     top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);

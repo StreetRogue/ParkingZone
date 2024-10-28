@@ -34,6 +34,9 @@ let zonaSeleccionada;
 console.log(parqueaderoExito.zonasParqueadero[0].estado);
 
 const alertaConfir = document.getElementById('alerta-confirmacion');
+const alertaEspacio = document.getElementById('alerta-espacio-no-disponible');
+const alertaSelec = document.getElementById('alerta-seleccion');
+const btnRegresar = document.getElementById('regresar');
 const fondo = document.getElementById('overlay');
 
 buttonsA.forEach(function(buttonA, index) {
@@ -46,7 +49,15 @@ buttonsA.forEach(function(buttonA, index) {
             fondo.classList.add('overlay-activo');
         };
     } else {
-        parrafo.style.backgroundColor = "#FFE701";  // Nuevo color
+        parrafo.style.backgroundColor = "#FFE701";
+        buttonA.onclick = function() {
+            alertaEspacio.classList.add('alerta-activa');
+            fondo.classList.add('overlay-activo');
+            btnRegresar.addEventListener("click", function () {
+                alertaEspacio.classList.remove('alerta-activa');
+                fondo.classList.remove('overlay-activo');
+            });
+        };
     }
 });
 
@@ -61,12 +72,13 @@ buttonsB.forEach(function(buttonB, index) {
             fondo.classList.add('overlay-activo');
         };
     } else {
-        parrafo.style.backgroundColor = "#FFE701";  // Nuevo color
+        parrafo.style.backgroundColor = "#FFE701";
     }
 });
 
 // Cancelar confirmacion del espacio
 const btnConfirmarSeleccion = document.getElementById('confirmar-seleccion');
+const btnContinuar = document.getElementById('continuar');
 const btnCancelarSeleccion = document.getElementById('cancelar-seleccion');
 
 btnConfirmarSeleccion.addEventListener("click", async function () {
@@ -80,7 +92,6 @@ btnConfirmarSeleccion.addEventListener("click", async function () {
             nombre: nuevoVisitante.nombre
         })
     });
-    const resVisitanteJson = await resVisitante.json();
 
     const resVehiculo = await fetch("http://localhost:3000/registrarVehiculo", {
         method: "POST",
@@ -92,7 +103,6 @@ btnConfirmarSeleccion.addEventListener("click", async function () {
             placa: nuevoVehiculo.placa,
         })
     });
-    const resVehiculoJson = await resVehiculo.json();
 
     const resEntrada = await fetch("http://localhost:3000/registrarEntrada", {
         method: "POST",
@@ -107,8 +117,14 @@ btnConfirmarSeleccion.addEventListener("click", async function () {
     });
     const resEntradaJson = await resEntrada.json();
     console.log(resEntrada.ok);
-    if (resEntrada.ok) {
-        window.location.href = resEntradaJson.redirect;
+    if (resEntrada.ok && resVehiculo.ok && resVisitante.ok) {
+        alertaSelec.classList.add('alerta-activa');
+        fondo.classList.add('overlay-activo');
+        btnContinuar.addEventListener("click", async function () {
+            alertaSelec.classList.remove('alerta-activa');
+            fondo.classList.remove('overlay-activo');
+            window.location.href = resEntradaJson.redirect;
+        });
     }
 });
 
