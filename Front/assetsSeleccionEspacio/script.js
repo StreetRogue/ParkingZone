@@ -1,8 +1,8 @@
 // Importamos clases
-import {ZonaParqueo} from '../Classes/ZonaParqueo.js';
-import {Parqueadero} from '../Classes/Parqueadero.js';
-import {Visitante} from '../Classes/Visitante.js';
-import {Vehiculo} from '../Classes/Vehiculo.js';
+import { parqueaderoExito } from "../Classes/Parqueadero.js";
+import { ZonaParqueo } from '../Classes/ZonaParqueo.js';
+import { Visitante } from '../Classes/Visitante.js';
+import { Vehiculo } from '../Classes/Vehiculo.js';
 
 // Obtenemos los datos del visitante
 const datosVisitante = JSON.parse(localStorage.getItem('nuevoVisitante'));
@@ -28,7 +28,7 @@ zonasJson.forEach(function(zona, index) {
 });
 
 // Se agregan las zonas al parqueadero
-const parqueaderoExito = new Parqueadero(zonasParqueo);
+parqueaderoExito.agregarZonasParqueo(zonasParqueo);
 let zonaSeleccionada;
 
 console.log(parqueaderoExito.zonasParqueadero[0].estado);
@@ -124,7 +124,6 @@ btnConfirmarSeleccion.addEventListener("click", async function () {
         })
     });
     const resEntradaJson = await resEntrada.json();
-    console.log(resEntrada.ok);
     if (resEntrada.ok && resVehiculo.ok && resVisitante.ok) {
         alertaConfir.classList.remove('alerta-activa');
         fondo.classList.remove('overlay-activo');
@@ -145,7 +144,8 @@ btnCancelarSeleccion.addEventListener("click", function () {
 
 // Cancelar entrada al parqueadero
 
-btnCancelar.addEventListener("click", function () {
-    window.location.href = "../pages/Index.html#registrar-entrada";
+btnCancelar.addEventListener("click", async function () {
+    const res = await fetch("http://localhost:3000/redireccionarPagina");
+    const resJson = await res.json();
+    window.location.href = resJson.redirect;
 });
-
