@@ -38,6 +38,7 @@ registrarSalidaBtn.addEventListener('click', async function(e) {
             // Reiniciar los valores de los campos y redireccionar
             cedulaSalidaInput.value = "";
             placaSalidaInput.value = "";
+            window.location.href = "/generarFactura";
             window.location.href = resJson.redirect;
         }
     }

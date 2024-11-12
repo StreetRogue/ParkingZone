@@ -2,6 +2,7 @@ const express = require('express');
 const {dataBase} = require("./dataBase");
 const cors = require("cors");
 const path = require('path');
+const pdfKit = require('../libs/pdfKit.js');
 
 // Servidor
 const app = express();
@@ -51,18 +52,16 @@ app.post("/validarEntrada", async (req, res) => {
         const conexion = await dataBase.getConnectionUsuario();
 
         // Comsulta de verificacion de placa con zona de parqueo ocupada
-        let consultaVehiculoZona = `
+        let consultaVehiculo = `
             SELECT *
-            FROM USER_PROYECTOINGS.Vehiculo v 
-            INNER JOIN USER_PROYECTOINGS.EntradaSalida es 
-            ON v.placaVehiculo = es.placaVehiculo 
-            INNER JOIN USER_PROYECTOINGS.ZonaParqueo zp 
-            ON es.ID_ZonaParqueoEntrada = zp.ID_ZonaParqueo
-            WHERE v.placaVehiculo = :placa
-            AND zp.EstadoZona = 'Ocupado'
+            FROM USER_PROYECTOINGS.EntradaSalida
+            INNER JOIN USER_PROYECTOINGS.Vehiculo
+            ON EntradaSalida.FechaEntrada = Vehiculo.FechaEntradaVehiculo
+            WHERE Vehiculo.PlacaVehiculo = :placa
+            AND EntradaSalida.FechaSalida IS NULL
         `;
 
-        const dataVehiculo = await conexion.execute(consultaVehiculoZona, {placa: placa});
+        const dataVehiculo = await conexion.execute(consultaVehiculo, {placa: placa});
 
         // Si el vehículo está en una zona de parqueo ocupada, se retorna error
         if (dataVehiculo.rows.length > 0) {
@@ -71,18 +70,17 @@ app.post("/validarEntrada", async (req, res) => {
         }
 
         // Consulta de verificacion de cedula con zona de parqueo ocupada
-        let consultaVisitanteZona = `
+        let consultaVisitante = `
             SELECT *
-            FROM USER_PROYECTOINGS.Vehiculo v 
-            INNER JOIN USER_PROYECTOINGS.Visitante vi 
-            ON v.cedulaVisitante = vi.cedulaVisitante
-            INNER JOIN USER_PROYECTOINGS.EntradaSalida es 
-            ON v.placaVehiculo = es.placaVehiculo 
-            INNER JOIN USER_PROYECTOINGS.ZonaParqueo zp ON 
-            es.ID_ZonaParqueoEntrada = zp.ID_ZonaParqueo
-            WHERE vi.cedulaVisitante = :cedula
-            AND zp.EstadoZona = 'Ocupado'`;
-        const dataVisitante = await conexion.execute(consultaVisitanteZona, {cedula: cedula});
+            FROM USER_PROYECTOINGS.EntradaSalida
+            INNER JOIN USER_PROYECTOINGS.Vehiculo
+            ON EntradaSalida.FechaEntrada = Vehiculo.FechaEntradaVehiculo
+            INNER JOIN USER_PROYECTOINGS.Visitante
+            ON Vehiculo.FechaEntradaVehiculo = Visitante.FechaEntradaVisitante
+            WHERE Visitante.CedulaVisitante like :cedula
+            AND EntradaSalida.FechaSalida IS NULL
+        `;
+        const dataVisitante = await conexion.execute(consultaVisitante, {cedula: cedula});
 
         // Si el visitante está en una zona de parqueo ocupada, se retorna error
         if (dataVisitante.rows.length > 0) {
@@ -240,7 +238,7 @@ app.post("/validarSalida", async (req, res) => {
                     FETCH FIRST 1 ROWS ONLY
                 )`;
             await conexion.execute(actualizarSalida, {placa: placa, cedula: cedula});
-
+            console.log("Fecha Salida Actualizada");
             // Actualizar el estado de la zona de parqueo a 'Disponible'
             let actualizarZona = `
                 UPDATE USER_PROYECTOINGS.ZonaParqueo
@@ -256,8 +254,8 @@ app.post("/validarSalida", async (req, res) => {
                     FETCH FIRST 1 ROWS ONLY
                 )`;
             await conexion.execute(actualizarZona, {cedula: cedula, placa: placa});
-
             await conexion.commit();
+            console.log("Zona actualizada");
             console.log("Salida registrada exitosamente");
             const redirectUrl = dataBase.getRol() === 'Admin' ? "/Pages/Index.html#home" : "/Pages/IndexSuper.html#home";
             return res.send({status: "ok", redirect: redirectUrl});
@@ -304,7 +302,7 @@ app.post("/crearNuevoAdmin", async (req, res) => {
                 const dataCreacion = await conexion.execute(crearAdministrador);
                 console.log("Administrador creado");
                 await conexion.commit();
-                return res.send({ status: "ok"});       
+                return res.send({ status: "ok"});
             }
         }
     }
@@ -313,7 +311,6 @@ app.post("/crearNuevoAdmin", async (req, res) => {
 app.post("/otorgarRol", async (req, res) => {
     const { user } = req.body;
     const conexion = await dataBase.getConnectionUsuario();
-    console.log(conexion);
     let otorgarRol = `GRANT C##ADMINISTRADOR_ROL TO ${user}`;
     const dataRol = await conexion.execute(otorgarRol);
     console.log("Rol otorgado");
@@ -323,20 +320,88 @@ app.post("/otorgarRol", async (req, res) => {
     await conexion.commit();
     return res.send({ status: "ok", redirect: "IndexSuper.html#home"});
 });
-/*
-app.post("/otorgarRol", async (req, res) => {
-    const user = req.body.user;
-    const conexion = await dataBase.getConnectionUsuarioPerra('superadmin_usuario', 'superadmin123');
-    let otorgarRol = `GRANT C##ADMINISTRADOR_ROL TO ${user}`;
-    const dataRol = await conexion.execute(otorgarRol);
-    console.log("Rol otorgado");
-    await conexion.commit();
-    await conexion.close();
-    return res.send({ status: "ok", redirect: "IndexSuper.html#home" });
-});
-*/
 
 app.get("/redireccionarPagina", (req, res) => {
     const redirectUrl = dataBase.getRol() === 'Admin' ? "/Pages/Index.html#home" : "/Pages/IndexSuper.html#home";
     return res.send({redirect: redirectUrl});
+});
+
+app.get("/generarFactura", async (req, res) => {
+    const conexion = await dataBase.getConnectionUsuario();
+    let obtenerCodFactura = `
+        SELECT ValorActual
+        FROM USER_PROYECTOINGS.Secuencia
+        WHERE NombreSecuencia like 'seqFactura'
+    `;
+    const dataCodigo = await conexion.execute(obtenerCodFactura);
+    console.log(dataCodigo.rows[0]);
+    let infoFactura = `
+        SELECT *
+        FROM USER_PROYECTOINGS.Factura
+        WHERE CodigoFactura = ${dataCodigo.rows[0]}
+    `;
+    const dataFactura = await conexion.execute(infoFactura);
+    console.log(dataFactura.rows[0]);
+
+    const codigo = dataFactura.rows[0][0];
+    const placa = dataFactura.rows[0][1];
+    const entrada = dataFactura.rows[0][2];
+    const salida = dataFactura.rows[0][3];
+    const duracion = dataFactura.rows[0][4];
+    const nombre = dataFactura.rows[0][5];
+    const cedula = dataFactura.rows[0][6];
+    const tarifa = dataFactura.rows[0][7];
+
+    const datos = {
+        codigo: codigo,
+        placa: placa,
+        entrada: entrada,
+        salida: salida,
+        duracion: duracion,
+        nombre: nombre,
+        cedula: cedula,
+        tarifa: tarifa,
+    };
+
+    console.log(datos);
+
+    // Obtén el valor de milisegundos desde el 1 de enero de 1970
+    let milisegundos = Date.now();
+
+    // Convierte los milisegundos a una fecha normal
+    let fecha = new Date(milisegundos);
+
+    // Obtén el día, mes, año, hora, minutos y segundos
+    let dia = fecha.getDate();
+    let mes = fecha.getMonth() + 1; // Los meses van de 0 a 11
+    let anio = fecha.getFullYear();
+    let hora = fecha.getHours();
+    let minutos = fecha.getMinutes();
+    let segundos = fecha.getSeconds();
+
+    // Formatea la hora en formato de 12 horas
+    let ampm = hora >= 12 ? 'PM' : 'AM';
+    hora = hora % 12; // Convertir a formato de 12 horas
+    hora = hora ? hora : 12; // La hora 0 debe ser 12
+    minutos = minutos < 10 ? '0' + minutos : minutos; // Asegura que los minutos tengan dos dígitos
+    segundos = segundos < 10 ? '0' + segundos : segundos; // Asegura que los segundos tengan dos dígitos
+
+    // Formatea el día y el mes para que siempre tengan dos dígitos
+    dia = dia < 10 ? '0' + dia : dia;
+    mes = mes < 10 ? '0' + mes : mes;
+
+    // Construye la fecha con el formato deseado
+    let fechaFormateada = `${dia}/${mes}/${anio} ${hora}:${minutos}:${segundos} ${ampm}`;
+
+    const nombreFactura = `Factura-${fechaFormateada}.pdf`;
+
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment;filename=${nombreFactura}`
+    });
+    pdfKit.generarPDF(
+        (chunck) => stream.write(chunck),
+        () => stream.end(),
+        datos
+    );
 });

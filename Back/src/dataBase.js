@@ -59,17 +59,6 @@ class Conexion {
     getRol() {
         return this.rol;
     }
-
-    async getConnectionUsuarioPerra(usuario, password) {
-            console.log("HPTAAAAAAAAA");
-            this.conexionUsuario = await oracledb.getConnection({
-                user: usuario,
-                password: password,
-                connectString: process.env.CONNECTSTRING
-            });
-        
-        return this.conexionUsuario;
-    }
 }
 
 const dataBase = new Conexion();
