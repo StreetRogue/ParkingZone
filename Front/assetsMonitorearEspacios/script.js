@@ -5,11 +5,11 @@ import { Visitante } from '../Classes/Visitante.js';
 import { Vehiculo } from '../Classes/Vehiculo.js';
 
 // Obtenemos los datos del visitante
-const datosVisitante = JSON.parse(localStorage.getItem('nuevoVisitante'));
-const datosVehiculo = JSON.parse(localStorage.getItem('nuevoVehiculo'));
+//const datosVisitante = JSON.parse(localStorage.getItem('nuevoVisitante'));
+//const datosVehiculo = JSON.parse(localStorage.getItem('nuevoVehiculo'));
 
-const nuevoVisitante = new Visitante(datosVisitante.cedula, datosVisitante.nombre);
-const nuevoVehiculo = new Vehiculo(datosVehiculo.placa, datosVehiculo.cedula);
+//const nuevoVisitante = new Visitante(datosVisitante.cedula, datosVisitante.nombre);
+//const nuevoVehiculo = new Vehiculo(datosVehiculo.placa, datosVehiculo.cedula);
 
 const buttonsA = document.querySelectorAll('.spaceA');
 const buttonsB = document.querySelectorAll('.spaceB');
