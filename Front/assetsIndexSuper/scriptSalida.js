@@ -38,7 +38,7 @@ registrarSalidaBtn.addEventListener('click', async function(e) {
             // Reiniciar los valores de los campos y redireccionar
             cedulaSalidaInput.value = "";
             placaSalidaInput.value = "";
-            window.location.href = "/generarFactura";
+            window.location.href = "http://localhost:3000/generarFactura";
             window.location.href = resJson.redirect;
         }
     }
@@ -47,7 +47,7 @@ registrarSalidaBtn.addEventListener('click', async function(e) {
 // Función de validación de formulario de salida
 function validarForm(cedula, placa) {
     const expresiones = {
-        expCedula: /^[1-9][0-9]{1,9}$/,
+        expCedula: /^[0-9]{1,9}$/,
         expPlaca: /^[A-Z]{3}[0-9]{2}[0-9A-Z]{1}$/
     };
     const msjErrorCamp = document.getElementById('error-campos-salida');
