@@ -285,7 +285,7 @@ app.post("/crearNuevoAdmin", async (req, res) => {
         if (data.rows.length > 0) {
             console.log("El usuario ya existe");
             // Cerrar conexión
-            return res.status(400).send({ status: "Error", message: "Usuario ingresado ya está registrado" });
+            return res.status(400).send({ status: "Error", message: "El administrador ya está registrado" });
         } else {
             // Consultar que usuario inicio sesion
             if (password == passwordRep) {
