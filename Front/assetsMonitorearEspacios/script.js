@@ -15,7 +15,7 @@ const buttonsA = document.querySelectorAll('.spaceA');
 const buttonsB = document.querySelectorAll('.spaceB');
 const btnCancelar = document.getElementById("btn-cancelar");
 
-console.log(parqueaderoExito);
+
 
 // Se obtienen las zonas de la base de datos
 const zonas = await fetch("http://localhost:3000/obtenerZonas");
@@ -31,15 +31,35 @@ zonasJson.forEach(function(zona, index) {
 
 // Se agregan las zonas al parqueadero
 parqueaderoExito.agregarZonasParqueo(zonasParqueo);
-let zonaSeleccionada;
 
-console.log(parqueaderoExito.zonasParqueadero[0].estado);
-
+const alertaLLeno = document.getElementById('alerta-lleno');
 const alertaInfo = document.getElementById('alerta-informacion');
 const alertaEspacio = document.getElementById('alerta-espacio-no-ocupado');
+const btnRegresarLLeno = document.getElementById('regresar-lleno');
 const btnRegresarNoOcupado = document.getElementById('regresar-no-ocupado');
 const btnRegresarInfo = document.getElementById('regresar-informacion');
 const fondo = document.getElementById('overlay');
+
+const nombre = document.getElementById('nombre');
+const cedula = document.getElementById('cedula');
+const placa = document.getElementById('placa');
+
+let contadorZonasOcupadas = 0;
+
+parqueaderoExito.zonasParqueadero.forEach(function(zona, index) {
+    if(zona.estado == "Ocupado") {
+        contadorZonasOcupadas++;
+    }
+});
+
+if(contadorZonasOcupadas == parqueaderoExito.zonasParqueadero.length) {
+    alertaLLeno.classList.add('alerta-activa');
+    fondo.classList.add('overlay-activo');
+    btnRegresarLLeno.addEventListener("click", function () {
+        alertaLLeno.classList.remove('alerta-activa');
+        fondo.classList.remove('overlay-activo');
+    });
+}
 
 buttonsA.forEach(function(buttonA, index) {
     const parrafo = buttonA.querySelector("p");
@@ -55,7 +75,12 @@ buttonsA.forEach(function(buttonA, index) {
         };
     } else {
         parrafo.style.backgroundColor = "#FFE701";
-        buttonA.onclick = function() {
+        buttonA.onclick = async function() {
+            const res = await fetch(`http://localhost:3000/obtenerInfo?zona=${encodeURIComponent(zona.noZona)}`);
+            const resJson = await res.json();
+            nombre.value = resJson[0][0];
+            cedula.value = resJson[0][1];
+            placa.value = resJson[0][2];
             alertaInfo.classList.add('alerta-activa');
             fondo.classList.add('overlay-activo');
             btnRegresarInfo.addEventListener("click", function () {
@@ -69,7 +94,6 @@ buttonsA.forEach(function(buttonA, index) {
 buttonsB.forEach(function(buttonB, index) {
     const parrafo = buttonB.querySelector("p");
     let zona = parqueaderoExito.zonasParqueadero[index + buttonsA.length];
-    console.log(zona);
     if (zona.estado == 'Disponible') {
         buttonB.onclick = function() {
             alertaEspacio.classList.add('alerta-activa');
@@ -81,7 +105,12 @@ buttonsB.forEach(function(buttonB, index) {
         };
     } else {
         parrafo.style.backgroundColor = "#FFE701";
-        buttonB.onclick = function() {
+        buttonB.onclick = async function () {
+            const res = await fetch(`http://localhost:3000/obtenerInfo?zona=${encodeURIComponent(zona.noZona)}`);
+            const resJson = await res.json();
+            nombre.value = resJson[0][0];
+            cedula.value = resJson[0][1];
+            placa.value = resJson[0][2];
             alertaInfo.classList.add('alerta-activa');
             fondo.classList.add('overlay-activo');
             btnRegresarInfo.addEventListener("click", function () {

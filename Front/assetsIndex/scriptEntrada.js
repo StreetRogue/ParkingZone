@@ -45,7 +45,7 @@ const registrarBtn = document.getElementById('boton-registrar');
 // Función de validación de formulario
 function validarForm(cedula, nombre, placa) {
     const expresiones = {
-        expCedula: /^[0-9]{1,9}$/,
+        expCedula: /^[0-9]{1,10}$/,
         expNombre: /^[a-zA-ZÀ-ÿ\s]{1,50}$/,
         expPlaca: /^[A-Z]{3}[0-9]{2}[0-9A-Z]{1}$/
     };

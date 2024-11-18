@@ -331,7 +331,7 @@ app.get("/generarFactura", async (req, res) => {
     let obtenerCodFactura = `
         SELECT ValorActual
         FROM USER_PROYECTOINGS.Secuencia
-        WHERE NombreSecuencia like 'seqFactura'
+        WHERE NombreSecuencia = 'seqFactura'
     `;
     const dataCodigo = await conexion.execute(obtenerCodFactura);
     console.log(dataCodigo.rows[0]);
@@ -404,4 +404,97 @@ app.get("/generarFactura", async (req, res) => {
         () => stream.end(),
         datos
     );
+});
+
+app.get("/obtenerInfo", async (req, res) => {
+    const { zona } = req.query;
+    console.log("Obteniendo info " + zona);
+    const conexion = await dataBase.getConnectionUsuario();
+    if (conexion) {
+        let consulta = `
+            SELECT NombreVisitante, CedulaVisitante, PlacaVehiculo
+            FROM USER_PROYECTOINGS.EntradaSalida 
+            INNER JOIN USER_PROYECTOINGS.Visitante
+            ON EntradaSalida.FechaEntrada = Visitante.FechaEntradaVisitante
+            WHERE FechaSalida IS NULL AND ID_ZonaParqueoEntrada = :zonaInfo
+        `;
+        const data = await conexion.execute(consulta, {zonaInfo: zona});
+        res.json(data.rows);
+    }
+});
+
+app.get("/obtenerMovimientos", async (req, res) => {
+    console.log("Obteniendo Movimientos ");
+    const conexion = await dataBase.getConnectionUsuario();
+    if (conexion) {
+        let consulta = `
+            SELECT EntradaSalida.PlacaVehiculo, Visitante.CedulaVisitante, FechaEntrada, FechaSalida,
+            TO_CHAR(FechaEntrada, 'HH12:MI:SS AM'), TO_CHAR(FechaSalida, 'HH12:MI:SS AM'),
+            ID_ZonaParqueoEntrada, TarifaCobro
+            FROM USER_PROYECTOINGS.EntradaSalida
+            LEFT JOIN USER_PROYECTOINGS.Factura
+            ON TO_CHAR(EntradaSalida.FechaEntrada, 'DD/MM/YYYY HH12:MI:SS AM') = Factura.Entrada
+            INNER JOIN USER_PROYECTOINGS.Visitante
+            ON EntradaSalida.FechaEntrada = Visitante.FechaEntradaVisitante
+        `;
+        console.log(consulta);
+        const data = await conexion.execute(consulta);
+        console.log(data.rows);
+        res.json(data.rows);
+    }
+});
+
+app.get("/obtenerMovimientosPlaca", async (req, res) => {
+    const { placa } = req.query;
+    console.log("Obteniendo Movimientos Placa");
+    const conexion = await dataBase.getConnectionUsuario();
+    if (conexion) {
+        try {
+            let consulta = `
+                SELECT EntradaSalida.PlacaVehiculo, Visitante.CedulaVisitante, FechaEntrada, FechaSalida,
+                TO_CHAR(FechaEntrada, 'HH12:MI:SS AM'), TO_CHAR(FechaSalida, 'HH12:MI:SS AM'),
+                ID_ZonaParqueoEntrada, TarifaCobro
+                FROM USER_PROYECTOINGS.EntradaSalida
+                LEFT JOIN USER_PROYECTOINGS.Factura
+                ON TO_CHAR(EntradaSalida.FechaEntrada, 'DD/MM/YYYY HH12:MI:SS AM') = Factura.Entrada
+                INNER JOIN USER_PROYECTOINGS.Visitante
+                ON EntradaSalida.FechaEntrada = Visitante.FechaEntradaVisitante
+                WHERE EntradaSalida.PlacaVehiculo = :placaBusqueda
+            `;
+            const data = await conexion.execute(consulta, {placaBusqueda: placa});
+            console.log(data.rows);
+            res.json(data.rows);
+        } catch {
+            res.json({status: "Error"});
+        }
+    }
+});
+
+app.get("/obtenerMovimientosCedula", async (req, res) => {
+    const { cedula } = req.query;
+    console.log("Obteniendo Movimientos Cedula");
+    const conexion = await dataBase.getConnectionUsuario();
+    if (conexion) {
+        try {
+            let consulta = `
+                SELECT EntradaSalida.PlacaVehiculo, Visitante.CedulaVisitante, FechaEntrada, FechaSalida,
+                TO_CHAR(FechaEntrada, 'HH12:MI:SS AM'), TO_CHAR(FechaSalida, 'HH12:MI:SS AM'),
+                ID_ZonaParqueoEntrada, TarifaCobro
+                FROM USER_PROYECTOINGS.EntradaSalida
+                LEFT JOIN USER_PROYECTOINGS.Factura
+                ON TO_CHAR(EntradaSalida.FechaEntrada, 'DD/MM/YYYY HH12:MI:SS AM') = Factura.Entrada
+                INNER JOIN USER_PROYECTOINGS.Visitante
+                ON EntradaSalida.FechaEntrada = Visitante.FechaEntradaVisitante
+                WHERE Visitante.CedulaVisitante = :cedulaBusqueda
+            `;
+            console.log(consulta);
+            const data = await conexion.execute(consulta, {cedulaBusqueda: cedula});
+            console.log(data.rows);
+            res.json(data.rows);
+
+        } catch {
+            res.json({status: "Error"});
+        }
+        
+    }
 });

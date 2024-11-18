@@ -47,7 +47,7 @@ registrarSalidaBtn.addEventListener('click', async function(e) {
 // Función de validación de formulario de salida
 function validarForm(cedula, placa) {
     const expresiones = {
-        expCedula: /^[0-9]{1,9}$/,
+        expCedula: /^[0-9]{1,10}$/,
         expPlaca: /^[A-Z]{3}[0-9]{2}[0-9A-Z]{1}$/
     };
     const msjErrorCamp = document.getElementById('error-campos-salida');

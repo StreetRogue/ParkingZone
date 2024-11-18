@@ -1,0 +1,136 @@
+body {
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.container {
+    margin-top: 25px;
+    height: calc(100% - 25px);
+    width: 95%;
+}
+
+h1 {
+    font-size: 40px;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.search-bar .selector, .search {
+    position: relative;
+    height: 25px;
+    display: inline-block;
+    padding: 10px;
+    border: none;
+    background-color: #eeeff1;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    width: 50%;
+}
+
+.search span:hover{
+    cursor: pointer; 
+}
+
+.divider {
+    height: 100%;
+    width: 2px;
+    background-color: #a7a7a7;
+    margin: 0 10px;
+}
+
+.search #search-icon {
+    color: #a7a7a7;
+}
+
+.search input {
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+    border: none;
+    outline: none;
+    background-color: #eeeff1;
+}
+
+.search input::placeholder {
+    color: #a7a7a7;
+}
+
+.selector {
+    display: flex;
+    align-items: center;
+    width: 15%;
+    margin-right: 30px;
+}
+
+.selector select {
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    appearance: none;
+}
+
+.selector::after {
+    content: "";
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent;
+    border-top-color: #a7a7a7;
+    position: absolute;
+    right: 13px;
+    bottom: 13px;
+    display: inline-block;
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+.selector select option {
+    background-color: #d9d9d9;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+table th, table td {
+    text-align: center;
+    padding: 15px 0px;
+    border: 2px solid #000; /* Bordes internos de las celdas */
+}
+
+table th {
+    padding: 30px 0px;
+}
+
+table thead {
+    background-color: #fadb47;
+    color: #000;
+}

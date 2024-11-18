@@ -75,16 +75,34 @@
             </div>
         </div>
     </div>
+    <div class="disponible">
+        <div class="circle"></div>
+        <p id="disponibilidad">Espacio NO disponible</p>
+    </div>
     <div id="overlay"></div>
     <div id="alerta-informacion" class="alerta">
         <div class="cabecera">
             <div class="logo">
                 <img src="../Resources/Logo_Exito_colombia.png" alt="Logo Éxito">
-                <h2>¿Desea continuar con la operación?</h2>
+                <h2>Información visitante</h2>
+            </div>
+        </div>
+        <div id="informacion-visitante">
+            <div id="nombre-input">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" readonly>
+            </div>
+            <div id="cedula-input">
+                <label for="cedula">Cédula:</label>
+                <input type="text" id="cedula" readonly>
+            </div>
+            <div id="placa-input">
+                <label for="placa">Placa:</label>
+                <input type="text" id="placa" readonly>
             </div>
         </div>
         <div class="botones">
-            <button id="regresar-informacion">REGRESAR</button>
+            <button id="regresar-informacion">CANCELAR</button>
         </div>
     </div>
     <div id="alerta-espacio-no-ocupado" class="alerta">
@@ -96,6 +114,17 @@
         </div>
         <div class="botones">
             <button id="regresar-no-ocupado">REGRESAR</button>
+        </div>
+    </div>
+    <div id="alerta-lleno" class="alerta">
+        <div class="cabecera">
+            <div class="logo">
+                <img src="../Resources/Logo_Exito_colombia.png" alt="Logo Éxito">
+                <h2>Se ha llegado al límite del parqueadero</h2>
+            </div>
+        </div>
+        <div class="botones">
+            <button id="regresar-lleno">REGRESAR</button>
         </div>
     </div>
 </body>

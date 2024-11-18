@@ -62,19 +62,6 @@ nav {
     position: relative;
 }
 
-.info {
-    height: 83%;
-    width: 80%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: inline-block;
-    font-size: 25px;
-    display: grid;
-    grid-template-rows: repeat(3, 1fr);
-}
-
 .texto, .disponible {
     word-spacing: .5rem;
 }
@@ -85,8 +72,11 @@ nav {
 
 .disponible {
     height: 30px;
+    font-size: 20px;
+    position: absolute;
+    top: 94%;
+    left: 1%;
     display: flex;
-    align-items: center;
     align-items: center;
 }
 
@@ -106,18 +96,17 @@ nav {
 }
 
 button {
-    display: block;
-    position: absolute;
-    top: 87%;
-    background-color: #000; /* Color de fondo oscuro */
-    color: #FFE701; /* Texto dorado */
-    border: none; /* Sin borde */
-    padding: 0.625rem 2.188rem; /* Espaciado interno */
-    text-align: center; /* Texto centrado */
-    font-size: 1rem; /* Tamaño de fuente */
+    position: relative;
+    display: inline-block;
+    background-color: #000;
+    color: #FFE701;
+    border: none;
+    padding: 1rem 4.188rem;
+    text-align: center;
+    font-size: 1rem;
     font-weight: bold;
-    border-radius: 1.25rem; /* Bordes redondeados */
-    cursor: pointer; /* Cambiar el cursor al pasar el mouse */
+    border-radius: 1.3rem;
+    cursor: pointer;
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 300ms;
@@ -213,8 +202,32 @@ button:hover {
     transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
+#alerta-informacion {
+    height: 85%;
+    width: 40%;
+    background-color: #FFFFFF;
+    border-radius: 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    opacity: 0; /* Inicialmente invisible */
+    visibility: hidden; /* Oculta el elemento visualmente */
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
 .cabecera {
     height: 30%;
+    width: 100%;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    background-color: #000;
+    position: relative;
+}
+
+#alerta-informacion .cabecera {
+    height: 20%;
     width: 100%;
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
@@ -242,35 +255,58 @@ button:hover {
     transform: translate(-50%, -50%);
 }
 
-#alerta-informacion .botones, #alerta-espacio-no-ocupado .botones {
+#alerta-espacio-no-ocupado .botones, #alerta-lleno .botones, #alerta-informacion .botones {
     position: relative;
     display: flex;
     flex-direction: row;
-    justify-content: center;            
+    justify-content: center;
     top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.alerta button {
-    position: relative;
-    display: inline-block;
+#alerta-informacion .botones {
+    position: absolute;
+    top: 90%;
 }
 
 #overlay {
-    position: fixed; /* Asegura que cubra toda la pantalla */
+    position: fixed; 
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo negro con opacidad */
-    z-index: 1; /* Asegúrate de que esté por encima del contenido pero debajo de la alerta */
-    opacity: 0; /* Inicialmente invisible */
-    visibility: hidden; /* Oculto */
-    transition: opacity 0.5s ease, visibility 0.5s ease; /* Transición suave */
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 1; 
+    opacity: 0; 
+    visibility: hidden; 
+    transition: opacity 0.5s ease, visibility 0.5s ease; 
 }
 
 .alerta-activa, .overlay-activo {
     opacity: 1 !important; /* Hacer visible */
     visibility: visible !important; /* Asegurarse de que se vea */
+}
+
+/* Alerta Informacion Usuario */
+
+#informacion-visitante label {
+    display: inline-block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-left: 2.5rem;
+}
+
+#informacion-visitante input {
+    width: 50%;
+    padding: 8px;
+    border: none;
+    border-bottom: 1px solid #000;
+    font-size: 1rem;
+}
+
+#informacion-visitante input:focus {
+    outline: none;
+    border-color: rgb(234 179 8);
 }
