@@ -1,25 +1,18 @@
 const btnAgregar = document.getElementById('btn-agregar');
 const btnCerrar = document.getElementById('btn-cerrar');
+const btnAgregarAlerta = document.getElementById('btn-agregar-alerta');
+
+const tituloTextArea = document.getElementById('titulo');
+const descripcionTextArea = document.getElementById('descripcion');
 
 const alertaAgregar = document.getElementById('alerta-agregar');
 const fondo = document.getElementById('overlay');
-
-btnAgregar.addEventListener("click", function() {
-    alertaAgregar.classList.add('alerta-activa');
-    fondo.classList.add('overlay-activo');
-});
-
-btnCerrar.addEventListener("click", function() {
-    alertaAgregar.classList.remove('alerta-activa');
-    fondo.classList.remove('overlay-activo');
-});
 
 let datos = [];
 
 async function obtenerReportes() {
     const res = await fetch(`http://localhost:3000/obtenerReportes`);
     const resJson = await res.json();
-    console.log(resJson);
     datos = [];
 
     resJson.forEach(function(datosElemento, index) {
@@ -39,6 +32,17 @@ async function obtenerReportes() {
         datos.push(nuevaFila);
     });
     agregarFilas();
+}
+
+async function agregarReporte(titulo, descripcion) {
+    const res = await fetch(`http://localhost:3000/agregarReporte?titulo=${encodeURIComponent(titulo)}&descripcion=${encodeURIComponent(descripcion)}`);
+    const resJson = await res.json();
+    if (resJson.status !== "Error") {
+        alertaAgregar.classList.remove('alerta-activa');
+        fondo.classList.remove('overlay-activo');
+    } else {
+        alert("Ocurrio un error");
+    }
 }
 
 function agregarFilas() {
@@ -81,3 +85,20 @@ function agregarFilas() {
 
 // Llamamos a la función al cargar la página
 document.addEventListener("DOMContentLoaded", obtenerReportes());
+
+btnAgregar.addEventListener("click", function() {
+    alertaAgregar.classList.add('alerta-activa');
+    fondo.classList.add('overlay-activo');
+});
+
+btnCerrar.addEventListener("click", function() {
+    alertaAgregar.classList.remove('alerta-activa');
+    fondo.classList.remove('overlay-activo');
+});
+
+btnAgregarAlerta.addEventListener("click", async function() {
+    let titulo = tituloTextArea.value;
+    let descripcion = descripcionTextArea.value;
+    await agregarReporte(titulo, descripcion);
+    obtenerReportes();
+});

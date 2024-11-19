@@ -524,12 +524,17 @@ app.get("/agregarReporte", async (req, res) => {
     const conexion = await dataBase.getConnectionUsuario();
     if (conexion) {
         try {
-            let consulta = `EXECUTE USER_PROYECTOINGS.crearReporte(:tituloReporte, :descripcionReporte)`;
-            console.log(consulta);
+            let consulta = `
+                BEGIN
+                    USER_PROYECTOINGS.crearReporte(:tituloReporte, :descripcionReporte);
+                END;
+            `;
             const data = await conexion.execute(consulta, {tituloReporte: titulo, descripcionReporte: descripcion});
-            res.json(data.rows);
-
-        } catch {
+            console.log(data);
+            await conexion.commit();
+            res.json({status: "Ok"});
+        } catch(error) {
+            console.log(error.message);
             res.json({status: "Error"});
         }
     }
