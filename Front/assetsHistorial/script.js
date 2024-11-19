@@ -207,8 +207,6 @@ function agregarFilas() {
             // Agregamos la fila al cuerpo de la tabla
             tbody.appendChild(fila);
     }
-
-    
 }
 
 // Llamamos a la función al cargar la página
