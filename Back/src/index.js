@@ -462,7 +462,6 @@ app.get("/obtenerMovimientosPlaca", async (req, res) => {
                 WHERE EntradaSalida.PlacaVehiculo = :placaBusqueda
             `;
             const data = await conexion.execute(consulta, {placaBusqueda: placa});
-            console.log(data.rows);
             res.json(data.rows);
         } catch {
             res.json({status: "Error"});
@@ -489,12 +488,49 @@ app.get("/obtenerMovimientosCedula", async (req, res) => {
             `;
             console.log(consulta);
             const data = await conexion.execute(consulta, {cedulaBusqueda: cedula});
-            console.log(data.rows);
             res.json(data.rows);
 
         } catch {
             res.json({status: "Error"});
         }
         
+    }
+});
+
+app.get("/obtenerReportes", async (req, res) => {
+    console.log("Obteniendo Reportes");
+    const conexion = await dataBase.getConnectionUsuario();
+    if (conexion) {
+        try {
+            let consulta = `
+                SELECT *
+                FROM USER_PROYECTOINGS.Reporte
+                ORDER BY ID_Reporte
+            `;
+            console.log(consulta);
+            const data = await conexion.execute(consulta);
+            res.json(data.rows);
+
+        } catch {
+            res.json({status: "Error"});
+        }
+        
+    }
+});
+
+app.get("/agregarReporte", async (req, res) => {
+    const { titulo, descripcion } = req.query;
+    console.log("Agregando Reporte");
+    const conexion = await dataBase.getConnectionUsuario();
+    if (conexion) {
+        try {
+            let consulta = `EXECUTE USER_PROYECTOINGS.crearReporte(:tituloReporte, :descripcionReporte)`;
+            console.log(consulta);
+            const data = await conexion.execute(consulta, {tituloReporte: titulo, descripcionReporte: descripcion});
+            res.json(data.rows);
+
+        } catch {
+            res.json({status: "Error"});
+        }
     }
 });

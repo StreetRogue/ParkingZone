@@ -1,0 +1,219 @@
+body {
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.container {
+    margin-top: 25px;
+    height: calc(100% - 25px);
+    width: 95%;
+}
+
+h1 {
+    font-size: 40px;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.agregar {
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.agregar p {
+    margin-right: 20px;
+    font-size: 20px;
+}
+
+button {
+    display: inline-block;
+    background-color: #000; /* Color de fondo oscuro */
+    color: #FFE701; /* Texto dorado */
+    border: none; /* Sin borde */
+    padding: 0.7rem 1.5rem; /* Espaciado interno */
+    font-size: 1rem; /* Tamaño de fuente */
+    font-weight: bold;
+    border-radius: 1.25rem; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar el cursor al pasar el mouse */
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+}
+
+button:hover {
+    background-color: #ec2023;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+table th, table td {
+    text-align: center;
+    padding: 15px 0px;
+    border: 2px solid #000; /* Bordes internos de las celdas */
+}
+
+table th {
+    padding: 15px 0px;
+}
+
+table th:first-child {
+    width: 8%;
+}
+
+table th:nth-child(2) {
+    width: 10%;
+}
+
+table th:nth-child(3) {
+    width: 50%;
+}
+
+table th:nth-child(4) {
+    width: 15%;
+}
+
+table th:nth-child(5) {
+    width: 10%;
+}
+
+table thead {
+    background-color: #fadb47;
+    color: #000;
+}
+
+#overlay {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 1;
+    opacity: 0; 
+    visibility: hidden; 
+    transition: opacity 0.5s ease, visibility 0.5s ease; 
+}
+
+.alerta {
+    height: 65%;
+    width: 65%;
+    background-color: #FFFFFF;
+    border-radius: 30px;
+    position: absolute;
+    z-index: 2;
+    opacity: 0; 
+    visibility: hidden; /* Oculta el elemento visualmente */
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.alerta-activa, .overlay-activo {
+    opacity: 1 !important; /* Hacer visible */
+    visibility: visible !important; /* Asegurarse de que se vea */
+}
+
+.cabecera {
+    height: 20%;
+    width: 100%;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    background-color: #000;
+    position: relative;
+}
+
+.cabecera h2 {
+    margin: 0%;
+    color: #FFFFFF;
+    font-size: 1.8rem;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 4%;
+}
+
+.cabecera .icono {
+    position: absolute;
+    color: #fadb47;
+    font-size: 35px;
+    right: 3%;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.cabecera .icono:hover {
+    color: #ec2023;
+    transition: color 0.2s ease; 
+}
+
+#campos-agregar {
+    display: flex;
+}
+
+#label-box  {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+}
+
+#label-box label {
+    display: inline-block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-left: 2.5rem;
+}
+
+#input-box  {
+    width: 80%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#input-box textarea {
+    width: 90%;
+    font-family: sans-serif;
+    font-size: 18px;
+    position: absolute;
+    box-sizing: border-box;
+    border: 1px solid #969696;
+    resize: none;
+}
+
+#input-box textarea:nth-child(1) {
+    height: 25%;
+    top: 31%;
+    padding: 3px 10px;
+}
+
+#input-box textarea:nth-child(2) {
+    height: 100%;
+    top: 80%;
+    padding: 6px 10px;
+}
+
+#btn-agregar-alerta {
+    position: absolute;
+    top: 81%;
+    left: 50%;
+    transform: translateX(-50%);
+}
