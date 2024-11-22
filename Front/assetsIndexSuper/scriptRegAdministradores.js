@@ -1,4 +1,5 @@
 const registrarBtn = document.getElementById('boton-registrar-admin');
+
 registrarBtn.addEventListener('click', async function(e) {
     e.preventDefault(); // Evitar comportamiento por defecto del botón
     // Obtenemos los valores de los campos
@@ -27,30 +28,32 @@ registrarBtn.addEventListener('click', async function(e) {
             })
         });
         
-        // Verificar si la respuesta fue exitosa
         const resJson = await res.json();
-        if (!res.ok) {
+        // Verificar si la respuesta fue exitosa
+        if (resJson.error || !res.ok) {
             msjError.innerHTML = resJson.message;
             msjError.style.display = 'block';
-            console.log(resJson.message);
-        } else {
-            const resRol = await fetch("http://localhost:3000/otorgarRol", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    user: user
-                })
-            });
-            const resRolJson = await resRol.json();
-            if (resRol.ok) {
-                userInput.value = "";
-                passwordInput.value = "";
-                passwordRepInput.value = "";
-                window.location.href = resRolJson.redirect;
-            }
+            return;
+        } 
+        const resRol = await fetch("http://localhost:3000/otorgarRol", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user: user
+            })
+        });
+
+        const resRolJson = await resRol.json();
+        // Verificar si la respuesta fue exitosa
+        if (resRol.ok) {
+            userInput.value = "";
+            passwordInput.value = "";
+            passwordRepInput.value = "";
+            window.location.href = resRolJson.redirect;
         }
+        
     }
 });
 

@@ -18,6 +18,9 @@ const btnCancelar = document.getElementById("btn-cancelar");
 // Se obtienen las zonas de la base de datos
 const zonas = await fetch("http://localhost:3000/obtenerZonas");
 const zonasJson = await zonas.json();
+if (zonasJson.error) {
+    alert(zonasJson.message);
+}
 
 // Array donde se guardaran las zonas instanciadas
 const zonasParqueo = [];

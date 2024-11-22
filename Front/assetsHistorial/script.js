@@ -19,7 +19,11 @@ let datos = [];
 async function obtenerTodo() {
     const res = await fetch(`http://localhost:3000/obtenerMovimientos`);
     const resJson = await res.json();
-    console.log(resJson);
+    if (resJson.error) {
+        agregarFilas();
+        alert(resJson.message);
+        return false;
+    }
     datos = [];
 
     resJson.forEach(function(datosElemento, index) {
@@ -53,7 +57,10 @@ async function obtenerMovPlaca(placa) {
         console.log("Placa No vacia");
         const res = await fetch(`http://localhost:3000/obtenerMovimientosPlaca?placa=${encodeURIComponent(placa)}`);
         const resJson = await res.json();
-        console.log(resJson.status); 
+        if (resJson.error) {
+            alert(resJson.message);
+            return false;
+        }
         if(resJson.status !== "Error") {
             datos = [];
             resJson.forEach(function(datosElemento, index) {
@@ -89,7 +96,10 @@ async function obtenerMovCedula(cedula) {
     if (!(cedula.trim() === "")) {
         const res = await fetch(`http://localhost:3000/obtenerMovimientosCedula?cedula=${encodeURIComponent(cedula)}`);
         const resJson = await res.json();
-        console.log(resJson);
+        if (resJson.error) {
+            alert(resJson.message);
+            return false;
+        }
         if(res.ok) {
             datos = [];
             resJson.forEach(function(datosElemento, index) {
@@ -116,7 +126,7 @@ async function obtenerMovCedula(cedula) {
             });
             agregarFilas();
             return true;
-        } 
+        }
     }
     return false;
 }

@@ -6,7 +6,7 @@ loginForm.addEventListener('submit', async function(e) {
     e.preventDefault(); // Evitar el envío del formulario
 
     // Obtenemos y limpiamos los valores de los campos
-    const user = document.getElementById('name').value;
+    const user = document.getElementById('name').value.trim();
     const password = document.getElementById('password').value;
 
     // Validación de campos vacíos
@@ -27,7 +27,7 @@ loginForm.addEventListener('submit', async function(e) {
         })
       });
     const resData = await res.json();
-    if (!res.ok) {
+    if (resData.error) {
         msjError.textContent = resData.message;
         return;
     }

@@ -1,25 +1,18 @@
 // Importamos clases
 import { parqueaderoExito } from "../Classes/Parqueadero.js";
 import { ZonaParqueo } from '../Classes/ZonaParqueo.js';
-import { Visitante } from '../Classes/Visitante.js';
-import { Vehiculo } from '../Classes/Vehiculo.js';
-
-// Obtenemos los datos del visitante
-//const datosVisitante = JSON.parse(localStorage.getItem('nuevoVisitante'));
-//const datosVehiculo = JSON.parse(localStorage.getItem('nuevoVehiculo'));
-
-//const nuevoVisitante = new Visitante(datosVisitante.cedula, datosVisitante.nombre);
-//const nuevoVehiculo = new Vehiculo(datosVehiculo.placa, datosVehiculo.cedula);
 
 const buttonsA = document.querySelectorAll('.spaceA');
 const buttonsB = document.querySelectorAll('.spaceB');
-const btnCancelar = document.getElementById("btn-cancelar");
 
 
 
 // Se obtienen las zonas de la base de datos
 const zonas = await fetch("http://localhost:3000/obtenerZonas");
 const zonasJson = await zonas.json();
+if (zonasJson.error) {
+    alert(zonasJson.message);
+}
 
 // Array donde se guardaran las zonas instanciadas
 const zonasParqueo = [];

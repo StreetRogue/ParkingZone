@@ -8,12 +8,6 @@
     transition: background-color 0.3s ease;
 }
 
-/* Al hacer scroll, el navbar cambiará a negro */
-.scrolled {
-    background-color: black;
-    color: white;
-}
-
 /* Hacer que el menú desplegable sea sticky para pantallas pequeñas */
 #mobile-menu {
     position: sticky;
@@ -21,7 +15,7 @@
     z-index: 1000;
 }
 
-#entrada-form p, #salida-form p {
+.form p {
     margin: 0;
     display: none;
     color: #F66060;

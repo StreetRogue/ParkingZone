@@ -8,10 +8,9 @@
     <!-- Carga de Tailwind CSS -->
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../assetsIndexSuper/style.css">
-    <script src="../Scripts/script.js" defer></script>
-    <script type="module" src="../assetsIndexSuper/scriptEntrada.js" defer></script>
-    <script type="module" src="../assetsIndexSuper/scriptSalida.js" defer></script>
+    <link rel="stylesheet" href="../assetsIndexGeneral/style.css">
+    <script type="module" src="../assetsIndexGeneral/scriptEntrada.js" defer></script>
+    <script type="module" src="../assetsIndexGeneral/scriptSalida.js" defer></script>
     <script type="module" src="../assetsIndexSuper/scriptRegAdministradores.js" defer></script>
 </head>
 
@@ -99,7 +98,7 @@
     <section id="registrar-entrada" class="h-screen flex flex-col md:flex-row items-center justify-between bg-white-100 mt-24 md:mt-32 px-6 md:px-16">
         <div id="entrada-container" class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
             <!-- Formulario de registro -->
-            <div id="entrada-form" class="flex flex-col space-y-4 w-full md:w-1/2 md:mr-8">
+            <div id="entrada-form" class="form flex flex-col space-y-4 w-full md:w-1/2 md:mr-8">
                 <h2 class="text-2xl font-semibold text-gray-900">Registrar Entrada</h2>
                 <input id="entrada-cedula" type="text" placeholder="Ingresar Cédula del visitante" class="border-b border-gray-400 focus:outline-none focus:border-yellow-500 text-gray-900 p-2">
                 <p id="error-cedula" class="alerta-error">La cédula solo debe contener números un máximo de 10 caracteres</p>
@@ -121,7 +120,7 @@
     <section id="registrar-salida" class="h-screen flex flex-col md:flex-row items-center justify-between bg-white-100 mt-24 md:mt-32 px-6 md:px-16">
         <div id="salida-container" class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
             <!-- Formulario de registro de salida -->
-            <div id="salida-form" class="flex flex-col space-y-4 w-full md:w-1/2 md:mr-8">
+            <div id="salida-form" class="form flex flex-col space-y-4 w-full md:w-1/2 md:mr-8">
                 <h2 class="text-2xl font-semibold text-gray-900">Registrar Salida</h2>
                 <input id="salida-cedula" type="text" placeholder="Ingresar Cédula del visitante" class="border-b border-gray-400 focus:outline-none focus:border-yellow-500 text-gray-900 p-2">
                 <p id="error-cedula-salida" class="alerta-error">La cédula solo debe contener números un máximo de 10 caracteres</p>
@@ -141,7 +140,7 @@
     <section id="registrar-administrador" class="h-screen flex flex-col md:flex-row items-center justify-between bg-white-100 mt-24 md:mt-32 px-6 md:px-16">
         <div id="administrador-container" class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
             <!-- Formulario de registro de salida -->
-            <div id="administrador-form" class="flex flex-col space-y-4 w-full md:w-1/2 md:mr-8">
+            <div id="administrador-form" class="form flex flex-col space-y-4 w-full md:w-1/2 md:mr-8">
                 <h2 class="text-2xl font-semibold text-gray-900">Registrar Administrador</h2>
                 <input id="admin-user" type="text" placeholder="Ingresar Usuario" class="border-b border-gray-400 focus:outline-none focus:border-yellow-500 text-gray-900 p-2">
                 <p id="error-user" class="alerta-error">El usuario puede contener números y letras</p>

@@ -31,10 +31,14 @@ registrarSalidaBtn.addEventListener('click', async function(e) {
         });
         
         const resJson = await res.json();
-        if (!res.ok) {
+        // Verificar si la respuesta fue exitosa
+        if (resJson.error || !res.ok) {
             msjErrorSalida.style.display = 'block';
             msjErrorSalida.innerHTML = resJson.message;
-        } else {
+            return;
+        }
+        // Si el backend indica redirección, redirigimos
+        if (resJson.redirect) {
             // Reiniciar los valores de los campos y redireccionar
             cedulaSalidaInput.value = "";
             placaSalidaInput.value = "";
