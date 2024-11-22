@@ -13,6 +13,11 @@ let datos = [];
 async function obtenerReportes() {
     const res = await fetch(`http://localhost:3000/obtenerReportes`);
     const resJson = await res.json();
+    if (resJson.error) {
+        agregarFilas();
+        alert(resJson.message);
+        return false;
+    }
     datos = [];
 
     resJson.forEach(function(datosElemento, index) {
@@ -37,11 +42,11 @@ async function obtenerReportes() {
 async function agregarReporte(titulo, descripcion) {
     const res = await fetch(`http://localhost:3000/agregarReporte?titulo=${encodeURIComponent(titulo)}&descripcion=${encodeURIComponent(descripcion)}`);
     const resJson = await res.json();
-    if (resJson.status !== "Error") {
+    if (resJson.status !== "error") {
         alertaAgregar.classList.remove('alerta-activa');
         fondo.classList.remove('overlay-activo');
     } else {
-        alert("Ocurrio un error");
+        alert(resJson.error);
     }
 }
 
@@ -92,13 +97,17 @@ btnAgregar.addEventListener("click", function() {
 });
 
 btnCerrar.addEventListener("click", function() {
+    tituloTextArea.value = "";
+    descripcionTextArea.value = "";
     alertaAgregar.classList.remove('alerta-activa');
     fondo.classList.remove('overlay-activo');
 });
 
 btnAgregarAlerta.addEventListener("click", async function() {
-    let titulo = tituloTextArea.value;
-    let descripcion = descripcionTextArea.value;
+    let titulo = tituloTextArea.value.trim();
+    let descripcion = descripcionTextArea.value.trim();
     await agregarReporte(titulo, descripcion);
     obtenerReportes();
+    tituloTextArea.value = "";
+    descripcionTextArea.value = "";
 });

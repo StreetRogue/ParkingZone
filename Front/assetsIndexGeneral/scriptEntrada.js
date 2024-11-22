@@ -1,6 +1,5 @@
-import { parqueaderoExito } from "../Classes/Parqueadero.js";
-console.log(parqueaderoExito.obtenerUsuarioActivo());
 const registrarBtn = document.getElementById('boton-registrar');
+
 registrarBtn.addEventListener('click', async function(e) {
     e.preventDefault(); // Evitar comportamiento por defecto del botón
     
@@ -26,13 +25,16 @@ registrarBtn.addEventListener('click', async function(e) {
             })
         });
         
-        // Verificar si la respuesta fue exitosa
         const resJson = await res.json();
-        if (!res.ok) {
+        // Verificar si la respuesta fue exitosa
+        if (resJson.error || !res.ok) {
             msjError.innerHTML = resJson.message;
             msjError.style.display = 'block';
-            console.log(resJson.message);
-        } else if (resJson.redirect) {
+            return;
+        } 
+        
+        // Si el backend indica redirección, redirigimos
+        if (resJson.redirect) {
             // Redirigir a la página de seleccionEspacio
             localStorage.setItem('nuevoVisitante', JSON.stringify({ cedula: cedula, nombre: nombre }));
             localStorage.setItem('nuevoVehiculo', JSON.stringify({ placa: placa, cedula: cedula }));
