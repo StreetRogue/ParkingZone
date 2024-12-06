@@ -22,7 +22,6 @@ class Conexion {
             const data = await conexion.execute(consulta, { userName: usuario, passwordUser: contra });
             // Validar que el usuario exista
             if (data.rows.length === 0) {
-                console.log("El usuario no existe");
                 // Cerrar conexión
                 await conexion.close();
                 return { success: false, message: "Usuario y/o contraseña incorrecto(s)" };
@@ -68,6 +67,12 @@ class Conexion {
 
     getRol() {
         return this.rol;
+    }
+
+    cerrarSesion() {
+        this.conexionUsuario = null;
+        this.user = null;
+        this.password = null;
     }
 }
 
