@@ -3,9 +3,7 @@
     position: sticky;
     top: 0;
     z-index: 50;
-    background-color: transparent;
     color: white;
-    transition: background-color 0.3s ease;
 }
 
 /* Hacer que el menú desplegable sea sticky para pantallas pequeñas */
@@ -19,4 +17,25 @@
     margin: 0;
     display: none;
     color: #F66060;
+}
+
+#btnCerrarSesion {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #ffdd00;
+    position: fixed;
+    display: inline;
+    bottom: 6%;
+    right: 5%;
+    cursor: pointer;
+}
+
+#btnCerrarSesion span {
+    position: absolute;
+    font-size: 30px;
+    font-weight: 600;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

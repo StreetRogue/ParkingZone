@@ -25,7 +25,7 @@ loginForm.addEventListener('submit', async function(e) {
             user: user,
             password: password
         })
-      });
+    });
     const resData = await res.json();
     if (resData.error) {
         msjError.textContent = resData.message;

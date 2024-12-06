@@ -39,7 +39,8 @@ app.post("/validarInicioSesion", async (req, res) => {
             console.log("Conexion a base de datos correcta");
             // Se verifica si el inicio de sesion se hizo correctamente
             if (!data.success) {
-                return res.status(400).send({ status: "Error", message: data.message });
+                console.log(data.message);
+                return res.send({ error: "error", message: data.message });
             }
             console.log("Inicio de sesión correcto");
             // Se redirige al index del usuario
@@ -130,7 +131,6 @@ app.get("/obtenerZonas", async (req, res) => {
         console.log(error.message);
         return res.send({ error: "error", message: error.message });
     }
-    
 });
 
 // Agregar nuevo visitante
@@ -677,6 +677,21 @@ app.get("/agregarReporte", async (req, res) => {
             res.json({status: "error", message: error.message});
         }
     } 
+    // Si no se ha iniciado sesion, se retorna error
+    catch(error) {
+        console.log(error.message);
+        return res.send({ error: "error", message: error.message });
+    }
+});
+
+// Cerrar Sesion
+app.get("/cerrarSesion", async (req, res) => {
+    // Se intenta hacer la conexion a la base de datos
+    try {
+        dataBase.cerrarSesion();
+        console.log("Se ha cerrado sesion");
+        return res.send({ status: "ok", redirect:"/Pages/login.html" });
+    }
     // Si no se ha iniciado sesion, se retorna error
     catch(error) {
         console.log(error.message);
