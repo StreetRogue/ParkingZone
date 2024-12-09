@@ -357,7 +357,7 @@ app.post("/crearNuevoAdmin", async (req, res) => {
                 let activarScript = `ALTER SESSION SET "_ORACLE_SCRIPT" = true`;
                 await conexion.execute(activarScript);
             
-                let crearAdministrador = `CREATE USER ${user} IDENTIFIED BY ${password}`;
+                let crearAdministrador = `CREATE USER ${user} IDENTIFIED BY "${password}"`;
                 const dataCreacion = await conexion.execute(crearAdministrador);
                 console.log("Administrador creado");
                 await conexion.commit();
@@ -382,6 +382,7 @@ app.post("/otorgarRol", async (req, res) => {
         const conexion = await dataBase.getConnectionUser();
         // Consulta para otorgar el rol de administrador
         let otorgarRol = `GRANT C##ADMINISTRADOR_ROL TO ${user}`;
+        console.log(otorgarRol);
         const dataRol = await conexion.execute(otorgarRol);
         console.log("Rol otorgado");
         // Consulta para dar permisos de conexion al administrador a la base de datos
@@ -400,6 +401,7 @@ app.post("/otorgarRol", async (req, res) => {
 
 app.get("/redireccionarPagina", (req, res) => {
     // Se redirige al index del usuario
+    console.log("Redireccionando");
     const redirectUrl = dataBase.getRol() === 'Admin' ? "/Pages/IndexAdmin.html#home" : "/Pages/IndexSuperAdmin.html#home";
     return res.send({redirect: redirectUrl});
 });

@@ -52,6 +52,7 @@ class Conexion {
     
     async getConnectionUser() {
         try {
+            console.log("Conexion correcta");
             this.conexionUsuario = await oracledb.getConnection({
                 user: this.user,
                 password: this.password,
@@ -60,7 +61,8 @@ class Conexion {
 
             console.log("Conexion correcta");
             return this.conexionUsuario;
-        } catch  {
+        } catch(error) {
+            console.log("Error: " + error);
             throw new Error("El (super)administrador no ha iniciado sesión.");
         }
     }
@@ -70,6 +72,7 @@ class Conexion {
     }
 
     cerrarSesion() {
+        this.conexionUsuario.close();
         this.conexionUsuario = null;
         this.user = null;
         this.password = null;

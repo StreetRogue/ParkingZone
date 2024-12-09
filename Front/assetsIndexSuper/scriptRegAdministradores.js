@@ -60,7 +60,7 @@ registrarBtn.addEventListener('click', async function(e) {
 function validarForm(user, password, passwordRep) {
     const expresiones = {
         expUser: /^[a-zA-Z][a-zA-Z0-9]{0,49}$/,
-        expPassword: /^[a-zA-Z0-9]{8,}$/ 
+        expPassword: /^.{8,}$/ 
     };
     const msjErrorCamp = document.getElementById('error-campos-admin');
     const msjErrorU = document.getElementById('error-user');
