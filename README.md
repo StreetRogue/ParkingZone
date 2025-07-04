@@ -44,3 +44,20 @@ Parking Zone está desarrollado bajo una arquitectura modular tradicional, donde
 1. **Clonar el repositorio:**
    ```bash
    git clone https://github.com/StreetRogue/ParkingZone.git
+
+
+   ## Créditos
+Desarrollado por:
+- Katherin Chamorro Lucero
+- Juan Camilo Benavides Salazar
+- Juan Esteban Chavez Collazos
+- Jhoan Sebastian Garcia Camacho
+- Juan Diego Perez Martinez
+
+**Profesor:** Sandra Buitron
+
+---
+
+> 🧪 Este proyecto fue desarrollado como parte de una iniciativa académica, planteando una problemática **ficticia** orientada a la prevención de riesgos asociados al conflicto armado en Colombia. En este escenario simulado, se buscó crear una solución tecnológica para mitigar el ingreso de vehículos sospechosos (vehículos bomba) en zonas de alta concentración ciudadana, como centros urbanos y espacios públicos. El objetivo fue aplicar conocimientos técnicos en un contexto realista, promoviendo la conciencia social y el diseño de software con impacto.
+
+
