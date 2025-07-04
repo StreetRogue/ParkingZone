@@ -43,7 +43,7 @@ Parking Zone está desarrollado bajo una arquitectura modular tradicional, donde
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone https://github.com/StreetRogue/Proyecto-Software-I
+   git clone https://github.com/StreetRogue/ParkingZone
 
 
 
